@@ -3,8 +3,7 @@
 class Grid():
 
     def __init__(self):
-        self.board = [[]]*50
-        self.board[0].append([0]*50)
+        self.board = [[0]*50]*50
         
         
         
