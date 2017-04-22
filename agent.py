@@ -25,10 +25,11 @@ class Agent():
     # updates state and qtable
     # takes in the value of alpha for updateing qtable
     def do_action(self, action, alpha, discount_factor, reward_modifier):
-        # TODO the state will change
-        new_state, reward = self.environment.do_action(self, action)
-        self.update_state(self.state, action, new_state, reward, alpha, discount_factor, reward_modifier)
-        return self.environment.do_action(self, action)
+        old_state = self.state 
+        reward = self.environment.do_action(self, action)
+        self.update_q(old_state, action, reward, alpha, discount_factor)
+        self.cumulative_reward += reward_modifier * reward 
+        return reward 
 
     # returns the reward for action without actually doing it
     def mock_action(self, action):
@@ -44,19 +45,14 @@ class Agent():
             return self.qtable[state][action]
 
     # updates the state, qtable, and cumulative reward
-    def update_state(self, state, action, next_state, reward, alpha, discount_factor, reward_modifier):
-        self.state = next_state
-
-        # update qtable
+    def update_state(self, state, action, reward, alpha, discount_factor):
+        next_state = self.state
         prev_component = (1 - alpha) * self.get_q(state, action)
         new_q = self.get_q(next_state, self.get_exploitative_action())
         update = alpha * (reward + (discount_factor * new_q))
         if not state in self.qtable:
             self.qtable[state] = dict()
         self.qtable[state][action] = prev_component + update
-
-        # update cumulative reward
-        self.cumulative_reward += reward_modifier * reward 
 
     # returns a random action
     def get_explorative_action(self):

@@ -55,15 +55,12 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
 # Q-learns for a single episode
 def qlearn_episode(agents, discount_factor, mode, epsilon):
     # run the simulation
-    #for steps in range(1, NUM_STEPS + 1):
-    steps = 1 # delete this
-    while agents[0].state != (-1, -1): # replace this with above for loop
+    for steps in range(1, NUM_STEPS + 1):
         # give each agent a turn
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
 
-        steps += 1# delete this
     #print("num steps", steps)       
     return agents[0].cumulative_reward
 
