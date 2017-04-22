@@ -20,7 +20,7 @@ class Agent():
     # takes in the value of alpha for updateing qtable
     def do_action(self, action, alpha):
         new_state, reward = environment.do_action(self, action)
-        self.update_state(new_state, )
+        self.update_state(action, new_state, alpha)
         return environment.do_action(self, action)
 
     # returns the reward for action without actually doing it
@@ -37,7 +37,7 @@ class Agent():
             return qtable[state][action]
 
     # updates the state and qtable
-    def update_state(action, next_state, alpha):
+    def update_q(action, state, next_state, alpha):
         prev_component = (1 - alpha) * self.get_q(state, action)
         self.state = next_state
         new_q = self.get_q(next_state, get_exploitative_action)
