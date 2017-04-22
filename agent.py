@@ -1,68 +1,85 @@
 # represents an agent within the environment
 
 import random
+import math
 
 class Agent():
 
     # initializes the agent's environment and state
-    def __init__(self, environment, state):
+    def __init__(self, environment, start_state):
         self.environment = environment
-        self.state = state
+        self.state = start_state
         self.qtable = dict()
+        self.cumulative_reward = 0
+
+    # resets the agent
+    def reset(self, start_state):
+        self.state = start_state
         self.cumulative_reward = 0
 
     # returns the possible actions the agent can do
     def get_actions(self):
-        return environment.get_agent_actions(self)
+        return self.environment.get_agent_actions(self)
 
     # returns the reward for doing the given action
     # updates state and qtable
     # takes in the value of alpha for updateing qtable
-    def do_action(self, action, alpha):
-        new_state, reward = environment.do_action(self, action)
-        self.update_state(action, new_state, alpha)
-        return environment.do_action(self, action)
+    def do_action(self, action, alpha, discount_factor, reward_modifier):
+        # TODO the state will change
+        new_state, reward = self.environment.do_action(self, action)
+        self.update_state(self.state, action, new_state, reward, alpha, discount_factor, reward_modifier)
+        return self.environment.do_action(self, action)
 
     # returns the reward for action without actually doing it
     def mock_action(self, action):
-        return environment.mock_action(self, action)
+        return self.environment.mock_action(self, action)
 
     # extracts an entry from the q-table, handling uninitialized entires
-    def get_q(state, action):
+    def get_q(self, state, action):
         if state not in self.qtable:
             return 0
         elif action not in self.qtable[state]:
             return 0
         else:
-            return qtable[state][action]
+            return self.qtable[state][action]
 
-    # updates the state and qtable
-    def update_q(action, state, next_state, alpha):
-        prev_component = (1 - alpha) * self.get_q(state, action)
+    # updates the state, qtable, and cumulative reward
+    def update_state(self, state, action, next_state, reward, alpha, discount_factor, reward_modifier):
         self.state = next_state
-        new_q = self.get_q(next_state, get_exploitative_action)
+
+        # update qtable
+        prev_component = (1 - alpha) * self.get_q(state, action)
+        new_q = self.get_q(next_state, self.get_exploitative_action())
+        update = alpha * (reward + (discount_factor * new_q))
+        if not state in self.qtable:
+            self.qtable[state] = dict()
+        self.qtable[state][action] = prev_component + update
+
+        # update cumulative reward
+        self.cumulative_reward += reward_modifier * reward 
 
     # returns a random action
-    def get_explorative_action():
+    def get_explorative_action(self):
         actions = self.get_actions()
         r = random.randrange(len(actions))
         return actions[r]
 
     # returns the action with the highest q value given the state
-    def get_exploitative_action():
+    def get_exploitative_action(self):
+        state = self.state
         actions = self.get_actions()
         result = None
         highest = -float("inf")
 
         for action in actions:
-            if self.q(qtable, state, action) > highest:
-                highest = self.q(qtable, state, action)
+            if self.get_q(state, action) > highest:
+                highest = self.get_q(state, action)
                 result = action
-        
+
         return result
 
     # picks an action using the epsilon-greedy approach
-    def pick_action_epsilon(epsilon):
+    def pick_action_epsilon(self, epsilon):
         r = random.random()
         if r < epsilon:
             return self.get_explorative_action()
@@ -70,21 +87,18 @@ class Agent():
             return self.get_exploitative_action()
 
     # picks an action using softmax
-    def pick_action_softmax(tau):
+    def pick_action_softmax(self, tau):
         r = random.random()
         state = self.state
         actions = self.get_actions()
 
         total = 0
         for action in actions:
-            total += math.e ** (self.q(qtable, state, action) / TAU)
-
-        if total <= 1:
-            return self.get_explorative_action() 
+            total += math.e ** (self.get_q(state, action) / tau)
             
         probs = dict()
         for action in actions:
-            probs[action] = (math.e ** (self.q(qtable, state, action) / TAU)) / total
+            probs[action] = (math.e ** (self.get_q(state, action) / tau)) / total
         
         current = 0
         for action in probs:

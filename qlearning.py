@@ -3,8 +3,7 @@
 # Updated from hw4 to support multiple agents in one environmenmt
 
 import matplotlib.pyplot as plt
-import random
-import math
+from environment import Environment
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
@@ -43,63 +42,45 @@ def main():
 def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
     agents = environment.get_all_agents()
 
-    # TODO: for now we are just summing the results for each individual angent, perhaps it might be worthwhile to graph separately?
     results = []
-    qtable = dict()
-    for agent in agents:
-        qtable[agent] = dict()
 
     for i in range(num_episodes):
-        results.append(qlearn_episode(agents, qtable, discount_factor, mode, epsilon))
-
+        environment.reset()
+        if i % 100 == 0:
+            print("episode", i)
+        results.append(qlearn_episode(agents, discount_factor, mode, epsilon))
+        #print("reward", results[i])
     return results
 
 # Q-learns for a single episode
-# While we don't reach an absorbing state,
-# pick an action based on the Q-table and
-# update the table and comulative reward
-def qlearn_episode(agents, qtable, discount_factor, mode, epsilon):
-    # dictionary mapping each agent to its cumulative reward
-    cumulative_reward = dict()
-    # dictionary mapping each agent to its state
-    state = dict() 
-    # initialize the state and reward of  each agent
-    for agent in agents:
-        cumulative_reward[agent] = 0
-        state[agent] = agent.get_state()
-
+def qlearn_episode(agents, discount_factor, mode, epsilon):
     # run the simulation
-    for i in range(NUM_STEPS):
+    #for steps in range(1, NUM_STEPS + 1):
+    steps = 1 # delete this
+    while agents[0].state != (-1, -1): # replace this with above for loop
         # give each agent a turn
         for agent in agents:
-            action = pick_action(agent, agent.get_actions(), qtable[agent], mode, epsilon)
-            reward = agent.do_action(action) 
-            next_state = agent.get_state() 
-            cumulative_reward[agent] += (discount_factor ** steps) * reward 
-            update_qtable(environment, qtable, steps+1, discount_factor, state, action, next_state, reward)
-            state = next_state
-            steps += 1 
+            action = pick_action(agent, mode, epsilon, TAU)
+            agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
 
-    return cumulative_reward
+        steps += 1# delete this
+    #print("num steps", steps)       
+    return agents[0].cumulative_reward
 
-# Updates the q-table using the bellman equation
-def update_qtable(environment, qtable, steps, discount_factor, state, action, next_state, reward):
-    alpha = 1 / steps
-    previous = (1 - alpha) * q(qtable, state, action) 
-    new_q = q(qtable, next_state, get_exploitative_action(next_state, environment.actions, qtable)) 
-    update = alpha * (reward + (discount_factor * new_q))
-    
-    if not state in qtable:
-        qtable[state] = dict()
-    
-    qtable[state][action] = previous + update
+# computes alpha for updating qtable
+def get_alpha(num_steps):
+    return 1 / num_steps
+
+# gets the reward modifier for adding to cumulative reward
+def get_reward_modifier(num_steps):
+    return DISCOUNT_FACTOR ** num_steps
 
 # picks an action using either softmac or the epsilon-greedy approach
-def pick_action(agent, mode, tune):
+def pick_action(agent, mode, epsilon, tau):
     if mode == EPSILON_MODE:
-        return agent.pick_action_epsilon(tune)
+        return agent.pick_action_epsilon(epsilon)
     elif mode == SOFTMAX_MODE:
-        return agent.pick_action_softmax(tune)
+        return agent.pick_action_softmax(tau)
 
 if __name__ == "__main__":
     main()
