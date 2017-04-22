@@ -31,16 +31,27 @@ class Grid():
     
     def do_action(self, agent, action):
         x, y = agent.state
-        new_x, new_y =  self.transitions[agent.state][action]
+        new_x, new_y =  self.transitions[agent.state.coords][action]
+        reward = self.generate_reward(agent, action)
+        agent.state.updateCoords(new_x, new_y)
         self.board[x][y] = 0
         self.board[new_x][new_y] = Grid.AGENT
+        return reward
 
-    def generate_reward(self, agent_state, action):
-        if self.getNextState(agent_state.coords, action) in list(self.getAdjacent(source)):
-            
-    
+    def generate_reward(self, agent, action):
+        if self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.source)):
+            if not agent.state.is_carrying:
+                agent.state.is_carrying = True
+                return 10
+            elif self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.spawn)):
+                if agent.state.is_carrying:
+                    agent.state.is_carrying = False
+                    return 20
+            else:
+                return 0
+                    
     def get_agent_actions(self, agent):
-        return list(self.transitions[agent.state].keys())
+        return list(self.transitions[agent.state.coords].keys())
         
     def transitionMap(self):
         for state in self.states:
@@ -49,7 +60,7 @@ class Grid():
     def getAdjacent(self, coord):
         adj =  {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
         for k in list(adj.keys() ):
-            if (0 > adj[k][0]) or (adj[k][0]>49) or (0>adj[k][1]) or (adj[k][1]>49) or adj[k] in [self.source].extend([agent.state for agent in self.agents]):
+            if (0 > adj[k][0]) or (adj[k][0]>49) or (0>adj[k][1]) or (adj[k][1]>49) or adj[k] in [self.source].extend([agent.state.coords for agent in self.agents]):
                 del adj[k]
         return adj
     
