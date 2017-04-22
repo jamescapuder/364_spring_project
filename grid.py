@@ -14,24 +14,26 @@ class Grid():
         #set spawn and source locations
         self.board[0][0] = Grid.SPAWN
         self.board[30][40] = Grid.SOURCE
-
+        self.source = (30,40)
         #initialize list of tuple-states
         self.states = []
         self.createStates()
-
+        
         self.transitions = {}
         self.actions = ["up", "down", "left", "right"]
         self.transitionMap()
 
     def isValidAction(self, state, action):
-        return action in self.transitions[state].keys() and self.transitions[state][action] not in [Grid.SOURCE, Grid.AGENT]
+        in_actions =  action in self.transitions[state].keys()
+        if in_actions:
+            return self.transitions[state][action] != self.source
+        return False
 
-
+        
     def transitionMap(self):
         for state in self.states:
             self.transitions[state] = self.getAdjacent(state)
-            
-    
+                
     def getAdjacent(self, coord):
         adj =  {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
         for k in list(adj.keys() ):
@@ -43,10 +45,11 @@ class Grid():
         for x in range(50):
             for y in range(50):
                 self.states.append((x, y))
-        #self.states.append(Grid.ABSORBING_STATE)
 
+    def getNextState(self, state, action):
+        return self.transitions[state][action]
     
-        
+
         
         
 
