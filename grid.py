@@ -52,14 +52,3 @@ class Grid():
 
         
         
-
-if __name__=="__main__":
-    g = Grid()
-    for l in g.board:
-        print(*l)
-    if TEST:
-        with open("estres.txt", "w") as f:
-            for k,v in g.transitions.items():
-                line = '{}, {}'.format(k, v)
-                print(line, file=f)
-                f.write("\n")
