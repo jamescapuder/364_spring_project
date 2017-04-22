@@ -1,4 +1,4 @@
-
+TEST = False
 
 class Grid():
     SPAWN = 1
@@ -24,7 +24,7 @@ class Grid():
         self.transitionMap()
 
     def isValidAction(self, state, action):
-        return self.transitions[state][action] not in [Grid.SOURCE, Grid.AGENT]
+        return action in self.transitions[state].keys() and self.transitions[state][action] not in [Grid.SOURCE, Grid.AGENT]
 
 
     def transitionMap(self):
@@ -33,11 +33,15 @@ class Grid():
             
     
     def getAdjacent(self, coord):
-        return {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
-        
+        adj =  {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
+        for k in list(adj.keys() ):
+            if (0 > adj[k][0]) or (adj[k][0]>49) or (0>adj[k][1]) or (adj[k][1]>49):
+                del adj[k]
+        return adj
+    
     def createStates(self):
-        for x in range(0,50):
-            for y in range(0,50):
+        for x in range(50):
+            for y in range(50):
                 self.states.append((x, y))
         #self.states.append(Grid.ABSORBING_STATE)
 
@@ -50,4 +54,9 @@ if __name__=="__main__":
     g = Grid()
     for l in g.board:
         print(*l)
-    print(g.transitions)
+    if TEST:
+        with open("estres.txt", "w") as f:
+            for k,v in g.transitions.items():
+                line = '{}, {}'.format(k, v)
+                print(line, file=f)
+                f.write("\n")
