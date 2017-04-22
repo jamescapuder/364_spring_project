@@ -12,6 +12,7 @@ class Grid():
             self.board.append([0]*50)
 
         self.agents = agents
+        self.add_agents_to_board()
         #set spawn and source locations
         self.board[0][0] = Grid.SPAWN
         self.board[30][40] = Grid.SOURCE
@@ -26,14 +27,28 @@ class Grid():
         self.actions = ["up", "down", "left", "right"]
         self.transitionMap()
 
+
+    def add_agents_to_board(self):
+        #Adds the Agent representations to the board
+        for agent in self.agents:
+            board[agent.state.x][agent.state.y] = Grid.AGENT
+    
     def get_all_agents(self):
         return self.agents
+
+    def mock_action(self, agent, action):
+        #Given an agent and an action, returns the reward without actually changing the agent's state
+        return generate_reward(agent, action)
     
     def do_action(self, agent, action):
         #Given an agent and a selected action, update the agent's state to reflect the change, return the reward
         x, y = agent.state.coords
         new_x, new_y =  self.transitions[agent.state.coords][action]
         reward = self.generate_reward(agent, action)
+        if reward==20:
+            agent.state.is_carrying = False
+        if reward ==10:
+            agent.state.is_carrying = True
         agent.state.updateCoords(new_x, new_y)
         self.board[x][y] = 0
         self.board[new_x][new_y] = Grid.AGENT
@@ -46,14 +61,12 @@ class Grid():
         #Reward is 20 if agent moves to spawn neighbor and agent.state.is_carrying == True (drops off resource)
         if self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.source)):
             if not agent.state.is_carrying:
-                agent.state.is_carrying = True
                 return 10
-            elif self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.spawn)):
-                if agent.state.is_carrying:
-                    agent.state.is_carrying = False
-                    return 20
-            else:
-                return 0
+        elif self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.spawn)):
+            if agent.state.is_carrying:
+                return 20
+        else:
+            return 0
                     
     def get_agent_actions(self, agent):
         #Given an agent, returns the list of valid actions given their current state 
