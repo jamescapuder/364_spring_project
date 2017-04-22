@@ -1,10 +1,11 @@
 
 
 class Grid():
-
     def __init__(self):
-        self.board = [[0]*50]*50
-        
+        self.board = []
+        for i in range(0,50):
+            self.board.append([0]*50)
+        self.board[1][1] = 1
         
         
 
