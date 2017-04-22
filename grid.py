@@ -14,8 +14,19 @@ class Grid():
         #set spawn and source locations
         self.board[0][0] = Grid.SPAWN
         self.board[30][40] = Grid.SOURCE
+        #initialize list of tuple-states
+        self.states = []
+        self.createStates()
+        
 
         
+    def createStates(self):
+        for x in range(Grid.WIDTH):
+            for y in range(Grid.HEIGHT):
+                if (x, y) not in Grid.OBSTACLES:
+                    self.states.append((x, y))
+        self.states.append(Grid.ABSORBING_STATE)
+
         
         
         
