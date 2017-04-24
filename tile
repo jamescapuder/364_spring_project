@@ -1,4 +1,0 @@
-class Tile:
-    def __init__(self, grid, x, y):
-         
-        
