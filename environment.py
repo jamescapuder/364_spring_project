@@ -1,108 +1,49 @@
-from agent import Agent
 from grid import Grid
-from state import State
 
 class Environment():
-    EMPTY = 'e'
-    SPAWN = 's'
-    SOURCE = 'x'
-    AGENT = 'a'
-
-    WIDTH = 5
-    HEIGHT = 5
-
     def __init__(self):
-        self.agents = list()
-        self.spawns = list()
-        self.sources = list()
-        
-        # TODO: read board from file
-        self.board = []
-        for i in range(Grid.HEIGHT):
-            self.board.append([])
-            for j in range(Grid.WIDTH):
-                if (i == 1 and j == 2) or (i == 2 and j == 1):
-                    self.board[i].append(Grid.AGENT)
-                    self.agents.append(Agent(self, State(j, i)))
-                if i == 3 and j == 3:
-                    self.board[i].append(Grid.SOURCE)
-                    self.sources.append(Source(self, j, i))
-                if i == 0 and j == 0:
-                    self.board[i].append(Grid.SPAWN)
-                    self.spawns.append(Source(self, j, i))
-                else:
-                    self.board[i].append(Grid.EMPTY)
-        
-        #initialize list of tuple-states
-        self.states = []
-        self.createStates()
-        
-        self.transitions = {}
-        self.actions = ["up", "down", "left", "right"]
-        self.transitionMap()
+        self.grid = Grid()
 
+    # get ready for a new episode    
+    def reset(self):
+        self.grid.reset()
 
-    def add_agents_to_board(self):
-        # Adds the Agent representations to the board
-        for agent in self.agents:
-            self.board[agent.state.x][agent.state.y] = Grid.AGENT
-    
     def get_all_agents(self):
-        return self.agents
+        return self.grid.agents
 
-    def mock_action(self, agent, action):
-        #Given an agent and an action, returns the reward without actually changing the agent's state
-        return generate_reward(agent, action)
-    
+    def get_agent_actions(self, agent):
+        result = []
+        tile = grid.get_tile(agent.state.coords)
+
+        for direction in tile.adjacent:
+            adj_tile = tile.adjacent[direction]
+            if adj_tile.type == Tile.EMPTY:
+                result.append(direction)
+            elif agent.state.carry < agent.capacity and adj_tile.type == Tile.SOURCE:
+                result.append("gather")
+            elif agent.state.carry > 0 and adj_tile.type == Tile.SPAWN:
+                result.append("stow")
+
+        return result
+                
+    # return the reward of the action
     def do_action(self, agent, action):
-        #Given an agent and a selected action, update the agent's state to reflect the change, return the reward
-        x, y = agent.state.coords
-        new_x, new_y =  self.transitions[agent.state.coords][action]
-        reward = self.generate_reward(agent, action)
-        if reward==20:
-            agent.state.is_carrying = False
-        if reward ==10:
-            agent.state.is_carrying = True
-        agent.state.updateCoords(new_x, new_y)
-        self.board[x][y] = 0
-        self.board[new_x][new_y] = Grid.AGENT
-        return reward
-
-    def generate_reward(self, agent, action):
-        #Given agent and action, returns the reward.
-        #Default is 0, agent neither picked up or dropped resources
-        #Reward is 10 if agent moves to source neighbor and agent.state.is_carrying == False (picks up resource)
-        #Reward is 20 if agent moves to spawn neighbor and agent.state.is_carrying == True (drops off resource)
-        if self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.sources[0])):
-            if not agent.state.is_carrying:
-                return 10
-        elif self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.spawns[0])):
-            if agent.state.is_carrying:
-                return 20
+        if action == "gather":
+            return 10
+        elif action == "stow":
+            return 20
+        elif action == None:
+            return 0
         else:
             return 0
-                    
-    def get_agent_actions(self, agent):
-        #Given an agent, returns the list of valid actions given their current state
-        return list(self.transitions[agent.state.coords].keys())
-        
-    def transitionMap(self):
-        for state in self.states:
-            self.transitions[state] = self.getAdjacent(state)
-                
-    def getAdjacent(self, coord):
-        #Given an x,y coordinate tuple, returns a dictionary mapping actions to resulting coordinates. Invalid actions are removed from the dictionary
-        adj =  {None: (coord[0], coord[1]), "right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
-        for k in list(adj.keys() ):
-            if (0 > adj[k][0]) or (adj[k][0]>=Grid.WIDTH) or (0>adj[k][1]) or (adj[k][1]>=Grid.HEIGHT) or adj[k] in self.sources + [agent.state.coords for agent in self.agents]:
-                del adj[k]
-        return adj
-    
-    def createStates(self):
-        for x in range(Grid.WIDTH):
-            for y in range(Grid.HEIGHT):
-                self.states.append((x, y))
 
-    def getNextState(self, state, action):
-        return self.transitions[state][action]
+    # returns the reward without actually doing it
+    def mock_action(self, agent, action):
+        if action == "gather":
+            return 10
+        elif action == "stow":
+            return 20
+        else:
+            return 0
+
 
