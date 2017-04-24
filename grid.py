@@ -64,10 +64,10 @@ class Grid():
         #Default is 0, agent neither picked up or dropped resources
         #Reward is 10 if agent moves to source neighbor and agent.state.is_carrying == False (picks up resource)
         #Reward is 20 if agent moves to spawn neighbor and agent.state.is_carrying == True (drops off resource)
-        if self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.source)):
+        if self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.sources[0])):
             if not agent.state.is_carrying:
                 return 10
-        elif self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.spawn)):
+        elif self.getNextState(agent.state.coords, action) in list(self.getAdjacent(self.spawns[0])):
             if agent.state.is_carrying:
                 return 20
         else:
@@ -83,9 +83,9 @@ class Grid():
                 
     def getAdjacent(self, coord):
         #Given an x,y coordinate tuple, returns a dictionary mapping actions to resulting coordinates. Invalid actions are removed from the dictionary
-        adj =  {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
+        adj =  {None: (coord[0], coord[1]), "right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
         for k in list(adj.keys() ):
-            if (0 > adj[k][0]) or (adj[k][0]>=Grid.WIDTH) or (0>adj[k][1]) or (adj[k][1]>=Grid.HEIGHT) or adj[k] in [self.source] + [agent.state.coords for agent in self.agents]:
+            if (0 > adj[k][0]) or (adj[k][0]>=Grid.WIDTH) or (0>adj[k][1]) or (adj[k][1]>=Grid.HEIGHT) or adj[k] in self.sources + [agent.state.coords for agent in self.agents]:
                 del adj[k]
         return adj
     
