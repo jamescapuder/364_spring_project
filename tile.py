@@ -1,5 +1,11 @@
 
 class Tile:
+    EMPTY = 0
+    SPAWN = 1 
+    SOURCE = 2
+    AGENT = 3
+    OBSTACLE = 4
+
     def __init__(self, grid, x, y, tile_type):
         self.x = x
         self.y = y
