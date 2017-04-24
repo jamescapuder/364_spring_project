@@ -1,10 +1,11 @@
 
 class Tile:
-    def __init__(self, grid, x, y):
+    def __init__(self, grid, x, y, tile_type):
         self.x = x
         self.y = y
+        self.coords = (x, y)
         self.grid=grid
-        self.tileType = grid[x][y]
+        self.tile_type = tile_type
         self.adjacent = {}
         self.initAdjacent()
 
