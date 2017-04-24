@@ -31,7 +31,7 @@ class Grid():
     def add_agents_to_board(self):
         #Adds the Agent representations to the board
         for agent in self.agents:
-            board[agent.state.x][agent.state.y] = Grid.AGENT
+            self.board[agent.state.x][agent.state.y] = Grid.AGENT
     
     def get_all_agents(self):
         return self.agents
@@ -80,7 +80,7 @@ class Grid():
         #Given an x,y coordinate tuple, returns a dictionary mapping actions to resulting coordinates. Invalid actions are removed from the dictionary
         adj =  {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
         for k in list(adj.keys() ):
-            if (0 > adj[k][0]) or (adj[k][0]>49) or (0>adj[k][1]) or (adj[k][1]>49) or adj[k] in [self.source].extend([agent.state.coords for agent in self.agents]):
+            if (0 > adj[k][0]) or (adj[k][0]>49) or (0>adj[k][1]) or (adj[k][1]>49) or adj[k] in [self.source] + [agent.state.coords for agent in self.agents]:
                 del adj[k]
         return adj
     

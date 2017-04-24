@@ -9,12 +9,15 @@ class Agent():
     def __init__(self, environment, start_state):
         self.environment = environment
         self.state = start_state
+        self.start_state = start_state
         self.qtable = dict()
         self.cumulative_reward = 0
 
     # resets the agent
-    def reset(self, start_state):
+    def reset(self, start_state = None):
         self.state = start_state
+        if self.state == None:
+            self.state = self.start_state
         self.cumulative_reward = 0
 
     # returns the possible actions the agent can do
@@ -45,7 +48,7 @@ class Agent():
             return self.qtable[state][action]
 
     # updates the state, qtable, and cumulative reward
-    def update_state(self, state, action, reward, alpha, discount_factor):
+    def update_q(self, state, action, reward, alpha, discount_factor):
         next_state = self.state
         prev_component = (1 - alpha) * self.get_q(state, action)
         new_q = self.get_q(next_state, self.get_exploitative_action())
