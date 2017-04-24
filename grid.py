@@ -4,20 +4,25 @@ class Grid():
     SPAWN = 1
     SOURCE = 2
     AGENT = 3
-    
-    def __init__(self, agents):
-        #initialize empty board
-        self.board = []
-        for i in range(0,50):
-            self.board.append([0]*50)
 
+    WIDTH = 5
+    HEIGHT = 5
+
+    def __init__(self, agents):
+        # initialize empty board
+        self.board = []
+        for i in range(0, Grid.HEIGHT):
+            self.board.append([0] * Grid.WIDTH)
+
+        #initialize agents
         self.agents = agents
         self.add_agents_to_board()
+        
         #set spawn and source locations
         self.board[0][0] = Grid.SPAWN
-        self.board[30][40] = Grid.SOURCE
-        self.source = (30,40)
-        self.spawn = (0,0)
+        self.board[2][2] = Grid.SOURCE
+        self.sources = [(2, 2)]
+        self.spawns = [(0, 0)]
         
         #initialize list of tuple-states
         self.states = []
@@ -29,7 +34,7 @@ class Grid():
 
 
     def add_agents_to_board(self):
-        #Adds the Agent representations to the board
+        # Adds the Agent representations to the board
         for agent in self.agents:
             self.board[agent.state.x][agent.state.y] = Grid.AGENT
     
@@ -69,7 +74,7 @@ class Grid():
             return 0
                     
     def get_agent_actions(self, agent):
-        #Given an agent, returns the list of valid actions given their current state 
+        #Given an agent, returns the list of valid actions given their current state
         return list(self.transitions[agent.state.coords].keys())
         
     def transitionMap(self):
@@ -80,18 +85,15 @@ class Grid():
         #Given an x,y coordinate tuple, returns a dictionary mapping actions to resulting coordinates. Invalid actions are removed from the dictionary
         adj =  {"right": (coord[0]+1, coord[1]), "left": (coord[0]-1, coord[1]), "down": (coord[0], coord[1]+1), "up": (coord[0], coord[1]-1)}
         for k in list(adj.keys() ):
-            if (0 > adj[k][0]) or (adj[k][0]>49) or (0>adj[k][1]) or (adj[k][1]>49) or adj[k] in [self.source] + [agent.state.coords for agent in self.agents]:
+            if (0 > adj[k][0]) or (adj[k][0]>=Grid.WIDTH) or (0>adj[k][1]) or (adj[k][1]>=Grid.HEIGHT) or adj[k] in [self.source] + [agent.state.coords for agent in self.agents]:
                 del adj[k]
         return adj
     
     def createStates(self):
-        for x in range(50):
-            for y in range(50):
+        for x in range(Grid.WIDTH):
+            for y in range(Grid.HEIGHT):
                 self.states.append((x, y))
 
     def getNextState(self, state, action):
         return self.transitions[state][action]
-    
 
-        
-        

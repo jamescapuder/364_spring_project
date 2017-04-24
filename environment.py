@@ -6,8 +6,8 @@ class Environment():
     def __init__(self):
         # for now hard code initial agent positions
         self.agents = []
-        self.agents.append(Agent(self, State(0, 0)))
-        self.agents.append(Agent(self, State(14, 14)))
+        self.agents.append(Agent(self, State(0, 1)))
+        self.agents.append(Agent(self, State(1, 0)))
 
         self.grid = Grid(self.agents)
 
