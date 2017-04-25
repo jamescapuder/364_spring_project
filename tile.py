@@ -13,16 +13,16 @@ class Tile:
         self.grid=grid
         self.tile_type = tile_type
         self.adjacent = {}
-        self.initAdjacent()
+        
 
-    def initAdjacent(self):
+    def initAdjacent(self,grid):
         if self.y != 0:
-            self.adjacent["north"] = self.grid[self.x][self.y-1]
-        if self.y != self.grid.HEIGHT:
-            self.adjacent["south"] = self.grid[self.x][self.y+1]
+            self.adjacent["north"] = grid.board[self.x][self.y-1]
+        if self.y != grid.HEIGHT:
+            self.adjacent["south"] = grid.board[self.x][self.y+1]
         if self.x != 0:
-            self.adjacent["west"] = self.grid[self.x-1][self.y]
-        if self.x != self.grid.WIDTH:
-            self.adjacent["east"] = self.grid[self.x+1][self.y]
+            self.adjacent["west"] = grid.board[self.x-1][self.y]
+        if self.x != grid.WIDTH:
+            self.adjacent["east"] = grid.board[self.x+1][self.y]
     
         
