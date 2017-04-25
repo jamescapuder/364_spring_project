@@ -31,3 +31,5 @@ class Grid():
             for y in x:
                 y.initAdjacent(self)
                 
+    def get_tile(self, x, y):
+        return self.board[x][y]
