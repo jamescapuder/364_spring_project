@@ -2,8 +2,8 @@ from grid import Grid
 from tile import Tile
 
 class Environment():
-    def __init__(self):
-        self.grid = Grid()
+    def __init__(self, fname):
+        self.grid = Grid(fname)
 
     # get ready for a new episode    
     def reset(self):

@@ -9,9 +9,6 @@ class Gui: #Changed to take in grid class
         self.pic.setFillColor((255, 255, 255))
         self.pic.setOutlineColor((0,0,0))
 
-        new = copy.copy(self.board)
-        self.states = [new]
-
         self.tiles = self.createBoard()
         for i in range(self.width):
             for j in range(self.height):
