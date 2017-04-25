@@ -21,7 +21,7 @@ class Grid():
         for x in range(0, self.WIDTH+1):
             self.board.append( [])
             for y in range(0,self.HEIGHT+1):
-                self.board[x].append( Tile(x, y, preBoard[y][x]) )
+                self.board[x].append( Tile(x, y, preBoard[x][y]) )
         
         self.initTileAdjacent()
 
