@@ -13,7 +13,7 @@ class Grid():
         self.sources = list()
         self.environment = environment
         # TODO: read board from file
-        preBoard = [list(l)[:-1] for l in open(fpath, 'r')]
+        preBoard = [map(int, list(l)[:-1]) for l in open(fpath, 'r')]
         self.WIDTH = len(preBoard[0])-1
         self.HEIGHT = len(preBoard)-1
         self.board = []

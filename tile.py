@@ -1,10 +1,10 @@
 
 class Tile:
-    EMPTY = 0
-    SPAWN = 1 
-    SOURCE = 2
-    AGENT = 3
-    OBSTACLE = 4
+    EMPTY = 'o'
+    SPAWN = 's'
+    SOURCE = 'r'
+    AGENT = 'a'
+    OBSTACLE = 'x'
 
     def __init__(self, x, y, tile_type):
         self.x = x
