@@ -45,7 +45,7 @@ class Environment():
             dest_tile = source_tile.adjacent[action]
             source_tile.tile_type = Tile.EMPTY
             dest_tile.tile_type = Tile.AGENT
-            agent.state.coords = dest_tile.coords
+            agent.update_position(dest_tile.coords)
             return 0
 
     # returns the reward without actually doing it

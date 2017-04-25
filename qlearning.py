@@ -28,12 +28,12 @@ TAU = 0.01
 def main():
     epsilon1 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
     epsilon2 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
-    softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
+    #softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
     
     episodes = range(1, NUM_EPISODES + 1) 
     plt.scatter(episodes, epsilon1, s=20, label="epsilon 0.05")
     plt.scatter(episodes, epsilon2, s=10, label="epsilon 0.1")
-    plt.scatter(episodes, softmax, s=5, label="softmax")
+    #plt.scatter(episodes, softmax, s=5, label="softmax")
     plt.legend()
     plt.title("Cumulative Reward Over Time")
     plt.xlabel("Number of Episodes")

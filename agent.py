@@ -13,6 +13,11 @@ class Agent():
         self.qtable = dict()
         self.cumulative_reward = 0
 
+    def update_position(self, coords):
+        self.state.coords = coords
+        self.state.x = coords[0]
+        self.state.y = coords[1]
+
     # resets the agent
     def reset(self, start_state = None):
         self.state = start_state
@@ -60,6 +65,8 @@ class Agent():
     # returns a random action
     def get_explorative_action(self):
         actions = self.get_actions()
+        if len(actions) == 0:
+            return None
         r = random.randrange(len(actions))
         return actions[r]
 
