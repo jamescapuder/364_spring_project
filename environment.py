@@ -14,7 +14,7 @@ class Environment():
 
     def get_agent_actions(self, agent):
         result = []
-        tile = grid.get_tile(agent.state.coords)
+        tile = self.grid.get_tile(agent.state.coords)
 
         for direction in tile.adjacent:
             adj_tile = tile.adjacent[direction]
@@ -29,7 +29,7 @@ class Environment():
                 
     # return the reward of the action
     def do_action(self, agent, action):
-        source_tile = grid.get_tile(agent.state.coords)
+        source_tile = self.grid.get_tile(agent.state.coords)
 
         if action == "gather":
             agent.state.carry += 1
