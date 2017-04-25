@@ -1,5 +1,6 @@
 
 class Tile:
+<<<<<<< HEAD
     EMPTY = 'o'
     SPAWN = 's'
     SOURCE = 'r'
@@ -9,6 +10,19 @@ class Tile:
     def __init__(self, x, y, tile_type):
         self.x = x
         self.y = y
+=======
+    EMPTY = 0
+    SPAWN = 1 
+    SOURCE = 2
+    AGENT = 3
+    OBSTACLE = 4
+
+    def __init__(self, grid, x, y, tile_type):
+        self.x = x
+        self.y = y
+        self.coords = (x, y)
+        self.grid=grid
+>>>>>>> d840e1b6ede16adeb1198d754ddf09b0cad9c301
         self.tile_type = tile_type
         self.adjacent = {}
         
