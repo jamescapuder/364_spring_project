@@ -5,6 +5,7 @@ from spawn import Spawn
 from source import Source
 
 class Grid():
+
     
     def __init__(self, fpath, environment):
         self.agents = list()
@@ -12,7 +13,7 @@ class Grid():
         self.sources = list()
         self.environment = environment
         # TODO: read board from file
-        preBoard = [map(int, list(l)[:-1]) for l in open(fpath, 'r')]
+        preBoard = [list(l)[:-1] for l in open(fpath, 'r')]
         self.WIDTH = len(preBoard[0])-1
         self.HEIGHT = len(preBoard)-1
         self.board = []
