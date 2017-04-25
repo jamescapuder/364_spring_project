@@ -6,11 +6,11 @@ class Tile:
     AGENT = 3
     OBSTACLE = 4
 
-    def __init__(self, grid, x, y, tile_type):
+    def __init__(self, x, y, tile_type):
         self.x = x
         self.y = y
         self.coords = (x, y)
-        self.grid=grid
+        
         self.tile_type = tile_type
         self.adjacent = {}
         
