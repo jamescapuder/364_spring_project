@@ -120,3 +120,4 @@ class Grid():
                 return 20
         else:
             return 0
+

@@ -5,10 +5,6 @@ import copy
 
 class Gui: #Changed to take in grid class
     def __init__(self, grid):
-        self.board = grid.board
-        self.finished = False
-        self.height = len(self.board)
-        self.width = len(self.board[0])
         self.pic = picture.Picture((self.width * 10, self.height * 10))
         self.pic.setFillColor((255, 255, 255))
         self.pic.setOutlineColor((0,0,0))
