@@ -5,6 +5,8 @@
 import matplotlib.pyplot as plt
 from environment import Environment
 
+ENV_FILE = "test_grid.txt"
+
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
 
@@ -24,9 +26,9 @@ TAU = 0.01
 # q-learns the grid environment with epsilon-greedy and softmax
 # approaches for selecting actions and graphs the results
 def main():
-    epsilon1 = qlearning(Environment(), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
-    epsilon2 = qlearning(Environment(), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
-    softmax = qlearning(Environment(), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
+    epsilon1 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
+    epsilon2 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
+    softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
     
     episodes = range(1, NUM_EPISODES + 1) 
     plt.scatter(episodes, epsilon1, s=20, label="epsilon 0.05")
