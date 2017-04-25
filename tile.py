@@ -10,7 +10,7 @@ class Tile:
         self.x = x
         self.y = y
         self.coords = (x, y)
-        
+        self.init_type = tile_type
         self.tile_type = tile_type
         self.adjacent = {}
         
@@ -24,5 +24,8 @@ class Tile:
             self.adjacent["west"] = grid.board[self.y][self.x-1]
         if self.x != grid.WIDTH:
             self.adjacent["east"] = grid.board[self.y][self.x+1]
+
+    def reset(self):
+        self.tile_type = self.init_type
     
         
