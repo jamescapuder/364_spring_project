@@ -3,7 +3,7 @@ from tile import Tile
 
 class Environment():
     def __init__(self, fname):
-        self.grid = Grid(fname)
+        self.grid = Grid(fname, self)
 
     # get ready for a new episode    
     def reset(self):
