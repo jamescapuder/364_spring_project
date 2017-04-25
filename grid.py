@@ -25,6 +25,17 @@ class Grid():
         
         self.initTileAdjacent()
 
+    def reset(self):
+        self.reset_all(self.agents)
+        self.reset_all(self.spawns)
+        self.reset_all(self.sources)
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                self.board[i][j].reset()
+
+    def reset_all(self, components):
+        for c in components:
+            c.reset()
 
     def initTileAdjacent(self):
         for x in self.board:
