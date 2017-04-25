@@ -33,6 +33,3 @@ class Grid():
                 
 
                 
-if __name__=="__main__":
-    g = Grid("test_grid.txt")
-    print(g.board)
