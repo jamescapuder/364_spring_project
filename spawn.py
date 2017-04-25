@@ -5,5 +5,8 @@ class Spawn():
         self.coord = (x, y)
         self.resources = 0
     
-    def dropoff():
+    def dropoff(self):
         self.resources += 1
+
+    def reset(self):
+        self.resources = 0
