@@ -5,7 +5,6 @@ from spawn import Spawn
 from source import Source
 
 class Grid():
-
     
     def __init__(self, fpath, environment):
         self.agents = list()
