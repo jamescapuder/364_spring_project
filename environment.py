@@ -16,13 +16,15 @@ class Environment():
         result = []
         tile = self.grid.get_tile(agent.state.coords)
 
+        print(len(tile.adjacent.keys()))
         for direction in tile.adjacent:
             adj_tile = tile.adjacent[direction]
+            print(adj_tile.tile_type) 
             if adj_tile.tile_type == Tile.EMPTY:
                 result.append(direction)
-            elif agent.state.carry < agent.capacity and adj_tile.tile_type == Tile.SOURCE:
+            elif agent.state.is_carrying < agent.state.capacity and adj_tile.tile_type == Tile.SOURCE:
                 result.append("gather")
-            elif agent.state.carry > 0 and adj_tile.tile_type == Tile.SPAWN:
+            elif agent.state.is_carrying > 0 and adj_tile.tile_type == Tile.SPAWN:
                 result.append("stow")
 
         return result
@@ -32,17 +34,18 @@ class Environment():
         source_tile = self.grid.get_tile(agent.state.coords)
 
         if action == "gather":
-            agent.state.carry += 1
+            agent.state.is_carrying += 1
             return 10
         elif action == "stow":
-            agent.state.carry -= 1
+            agent.state.is_carrying -= 1
             return 20
         elif action == None:
             return 0
         else:
             dest_tile = source_tile.adjacent[action]
             source_tile.tile_type = Tile.EMPTY
-            dest_tile.tile_type = Tile.AGENT 
+            dest_tile.tile_type = Tile.AGENT
+            agent.state.coords = dest_tile.coords
             return 0
 
     # returns the reward without actually doing it

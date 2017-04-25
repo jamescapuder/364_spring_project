@@ -61,6 +61,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
         # give each agent a turn
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
+            print("Action: ", action)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
 
     #print("num steps", steps)       

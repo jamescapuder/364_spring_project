@@ -49,5 +49,5 @@ class Grid():
                 if y.tile_type == Tile.AGENT:
                     self.agents.append(Agent(self.environment, State(y.x, y.y)))
                 
-    def get_tile(self, x, y):
-        return self.board[x][y]
+    def get_tile(self, coord):
+        return self.board[coord[0]][coord[1]]
