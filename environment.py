@@ -15,11 +15,8 @@ class Environment():
     def get_agent_actions(self, agent):
         result = []
         tile = self.grid.get_tile(agent.state.coords)
-
-        print(len(tile.adjacent.keys()))
         for direction in tile.adjacent:
             adj_tile = tile.adjacent[direction]
-            print(adj_tile.tile_type) 
             if adj_tile.tile_type == Tile.EMPTY:
                 result.append(direction)
             elif agent.state.is_carrying < agent.state.capacity and adj_tile.tile_type == Tile.SOURCE:
@@ -31,8 +28,9 @@ class Environment():
                 
     # return the reward of the action
     def do_action(self, agent, action):
+        #print(self.grid)
         source_tile = self.grid.get_tile(agent.state.coords)
-
+        #print("Action:", action)
         if action == "gather":
             agent.state.is_carrying += 1
             return 10

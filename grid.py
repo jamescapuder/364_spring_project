@@ -14,17 +14,26 @@ class Grid():
         self.environment = environment
         # TODO: read board from file
         preBoard = [list(l)[:-1] for l in open(fpath, 'r')]
-        self.WIDTH = len(preBoard[0])-1
-        self.HEIGHT = len(preBoard)-1
+        self.width = len(preBoard[0])
+        self.height = len(preBoard)
         self.board = []
         
-        for x in range(0, self.WIDTH+1):
-            self.board.append( [])
-            for y in range(0,self.HEIGHT+1):
-                self.board[x].append( Tile(y, x, preBoard[y][x]) )
-        
+        for i in range(0, self.height):
+            self.board.append([])
+            for j in range(0, self.width):
+                # Tile's constructor takes in x, y, type
+                self.board[i].append(Tile(j, i, preBoard[i][j]))
+
+        print(self.board[1][1].x, self.board[1][1].y)
         self.initTileAdjacent()
 
+    def __str__(self):
+        result = ""
+        for i in range(len(self.board)):
+            for j in range(len(self.board[i])):
+                result += str(self.board[i][j]) + ", "
+            result += "\n"
+        return result
 
     def reset(self):
         self.reset_all(self.agents)
@@ -50,4 +59,4 @@ class Grid():
                     self.agents.append(Agent(self.environment, State(y.x, y.y)))
                 
     def get_tile(self, coord):
-        return self.board[coord[0]][coord[1]]
+        return self.board[coord[1]][coord[0]]

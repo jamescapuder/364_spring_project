@@ -51,7 +51,6 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
         if i % 100 == 0:
             print("episode", i)
         results.append(qlearn_episode(agents, discount_factor, mode, epsilon))
-        #print("reward", results[i])
     return results
 
 # Q-learns for a single episode
@@ -61,10 +60,8 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
         # give each agent a turn
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
-            print("Action: ", action)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
 
-    #print("num steps", steps)       
     return agents[0].cumulative_reward
 
 # computes alpha for updating qtable
