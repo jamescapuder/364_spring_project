@@ -4,8 +4,8 @@ class State():
         self.x = x
         self.y = y
         self.coords = (x,y)
-        self.is_carrying = False
-        self.capacity = 100000
+        self.carry = 0 
+        self.capacity = 1
 
     def updateCoords(self, x, y):
         self.x = x

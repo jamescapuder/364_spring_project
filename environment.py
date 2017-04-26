@@ -19,9 +19,9 @@ class Environment():
             adj_tile = tile.adjacent[direction]
             if adj_tile.tile_type == Tile.EMPTY:
                 result.append(direction)
-            elif agent.state.is_carrying < agent.state.capacity and adj_tile.tile_type == Tile.SOURCE:
+            elif agent.state.carry < agent.state.capacity and adj_tile.tile_type == Tile.SOURCE:
                 result.append("gather")
-            elif agent.state.is_carrying > 0 and adj_tile.tile_type == Tile.SPAWN:
+            elif agent.state.carry > 0 and adj_tile.tile_type == Tile.SPAWN:
                 result.append("stow")
 
         return result
@@ -32,10 +32,12 @@ class Environment():
         source_tile = self.grid.get_tile(agent.state.coords)
         #print("Action:", action)
         if action == "gather":
-            agent.state.is_carrying += 1
+            agent.state.carry += 1
+            print("Gathered!", agent.state.carry)
             return 10
         elif action == "stow":
-            agent.state.is_carrying -= 1
+            print("Stowed!", agent.state.carry)
+            agent.state.carry -= 1
             return 20
         elif action == None:
             return 0
