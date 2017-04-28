@@ -1,10 +1,14 @@
 
 class Tile:
+    # Tiles used in our real simulation
     EMPTY = 'o'
     SPAWN = 's'
     SOURCE = 'r'
     AGENT = 'a'
     OBSTACLE = 'x'
+    # Test tiles
+    GOAL = 'g'
+    PENALTY = 'p'
 
     def __init__(self, x, y, tile_type):
         self.x = x

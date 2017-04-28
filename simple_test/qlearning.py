@@ -4,6 +4,7 @@
 
 import matplotlib.pyplot as plt
 from environment import Environment
+from grid import Grid
 
 ENV_FILE = "adam_board.txt"
 #ENV_FILE = "test_grid.txt"
@@ -27,8 +28,8 @@ TAU = 0.01
 # q-learns the grid environment with epsilon-greedy and softmax
 # approaches for selecting actions and graphs the results
 def main():
-    epsilon1 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
-    epsilon2 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
+    epsilon1 = qlearning(Grid(), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
+    epsilon2 = qlearning(Grid(), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
     #softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
     
     episodes = range(1, NUM_EPISODES + 1) 
@@ -58,7 +59,7 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
 def qlearn_episode(agents, discount_factor, mode, epsilon):
     # run the simulation
     for steps in range(1, NUM_STEPS + 1):
-        if agents[0].environment.done:
+        if agents[0].state == agents[0].environment.ABSORBING_STATE:
             break
         # give each agent a turn
         for agent in agents:
