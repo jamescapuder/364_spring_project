@@ -5,12 +5,12 @@ import copy
 
 class Gui: #Changed to take in grid class
     def __init__(self, grid):
-        #self.board = grid.board
-        #self.height = grid.height
-        #self.width = grid.width
-        self.board = grid  # Remove for testing
-        self.height = len(grid)
-        self.width  = len(grid[0])
+        self.board = grid.board
+        self.height = grid.height
+        self.width = grid.width
+        #self.board = grid  # Remove for testing
+        #self.height = len(grid)
+        #self.width  = len(grid[0])
         self.pic = picture.Picture((self.width * 50, self.height * 50))
         self.pic.setFillColor((255, 255, 255))
         self.pic.setOutlineColor((0,0,0))
@@ -26,8 +26,8 @@ class Gui: #Changed to take in grid class
 
 
     def newUpdate(self, grid):
-        #board = grid.board
-        board = grid
+        board = grid.board
+        #board = grid
         for i in range(self.width):
             for j in range(self.height):
                 if board[i][j] == 0:
@@ -103,4 +103,4 @@ def main(): # for testing
     # gui.step(g)
     time.sleep(1)
     gui.newUpdate(f)
-main()
+#main()
