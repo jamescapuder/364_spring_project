@@ -3,7 +3,6 @@
 # Updated from hw4 to support multiple agents in one environmenmt
 
 import matplotlib.pyplot as plt
-from environment import Environment
 from grid import Grid
 
 ENV_FILE = "adam_board.txt"

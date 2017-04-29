@@ -14,15 +14,11 @@ class Agent():
         self.cumulative_reward = 0
 
     def update_position(self, coords):
-        self.state.coords = coords
-        self.state.x = coords[0]
-        self.state.y = coords[1]
+        self.state = (coords[0], coords[1])
 
     # resets the agent
-    def reset(self, start_state = None):
-        self.state = start_state
-        if self.state == None:
-            self.state = self.start_state
+    def reset(self):
+        self.state = (0, 0)
         self.cumulative_reward = 0
 
     # returns the possible actions the agent can do

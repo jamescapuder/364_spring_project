@@ -1,5 +1,6 @@
 import random
 from agent import Agent
+
 """
 The Grid class defines the Grid that the agent operate in
 """
@@ -15,7 +16,7 @@ class Grid():
     """
     def __init__(self):
         random.seed(12345)
-
+        
         self.states = []
         self.terminalStates = []
         self.actions = []
@@ -35,7 +36,8 @@ class Grid():
 
     def do_action(self, agent, action):
         state = self.agent.state
-        self.agent.state = self.generateNextState(state, action)
+        new_state = self.generateNextState(state, action)
+        agent.update_position(new_state)
         return self.generateReward(state, action)
 
     def get_all_agents(self):
