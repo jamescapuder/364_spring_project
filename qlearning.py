@@ -64,7 +64,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
-
+    
     return agents[0].cumulative_reward
 
 # computes alpha for updating qtable
