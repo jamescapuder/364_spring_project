@@ -67,7 +67,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
         curses_step(screen, agents[0].environment.grid.board)
-            
+    kill_curses(screen)
     return agents[0].cumulative_reward
 
 # computes alpha for updating qtable
@@ -94,7 +94,7 @@ def init_curses():
     stdscr.keypad(True)
     return stdscr
 
-def kill_curses():
+def kill_curses(stdscr):
     stdscr.keypad(False)
     curses.echo()
     # restore the terminal to its original state
