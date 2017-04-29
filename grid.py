@@ -1,18 +1,15 @@
 from agent import Agent
 from tile import Tile
-from state import State
 from spawn import Spawn
 from source import Source
 
 class Grid():
-
     
     def __init__(self, fpath, environment):
         self.agents = list()
         self.spawns = list()
         self.sources = list()
         self.environment = environment
-        # TODO: read board from file
         preBoard = [list(l)[:-1] for l in open(fpath, 'r')]
         self.width = len(preBoard[0])
         self.height = len(preBoard)
@@ -56,7 +53,7 @@ class Grid():
                 if y.tile_type == Tile.SPAWN:
                     self.spawns.append(Spawn(y.x, y.y))
                 if y.tile_type == Tile.AGENT:
-                    self.agents.append(Agent(self.environment, State(y.x, y.y)))
+                    self.agents.append(Agent(self.environment, y.x, y.y, 0))
                 
-    def get_tile(self, coord):
-        return self.board[coord[1]][coord[0]]
+    def get_tile(self, x, y):
+        return self.board[y][x]

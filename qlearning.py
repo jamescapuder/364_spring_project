@@ -5,8 +5,8 @@
 import matplotlib.pyplot as plt
 from environment import Environment
 
-ENV_FILE = "adam_board.txt"
-#ENV_FILE = "test_grid.txt"
+#ENV_FILE = "adam_board.txt"
+ENV_FILE = "test_grid.txt"
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000

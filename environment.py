@@ -1,5 +1,6 @@
 from grid import Grid
 from tile import Tile
+from state import State
 
 class Environment():
     def __init__(self, fname):
@@ -16,37 +17,35 @@ class Environment():
 
     def get_agent_actions(self, agent):
         result = []
-        tile = self.grid.get_tile(agent.state.coords)
+        tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
         for direction in tile.adjacent:
             adj_tile = tile.adjacent[direction]
             tile_type = adj_tile.tile_type
             if tile_type == Tile.EMPTY or tile_type == Tile.GOAL or tile_type == Tile.PENALTY:
                 result.append(direction)
-            elif agent.state.carry < agent.state.capacity and tile_type == Tile.SOURCE:
+            elif agent.state[State.CARRY] < agent.capacity and tile_type == Tile.SOURCE:
                 result.append("gather")
-            elif agent.state.carry > 0 and tile_type == Tile.SPAWN:
+            elif agent.state[State.CARRY] > 0 and tile_type == Tile.SPAWN:
                 result.append("stow")
-
         return result
                 
     # return the reward of the action
     def do_action(self, agent, action):
-        #print(self.grid)
-        source_tile = self.grid.get_tile(agent.state.coords)
-        #print("Action:", action)
+        source_tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
         if action == "gather":
-            agent.state.carry += 1
+            agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] + 1)
             return 1
         elif action == "stow":
-            agent.state.carry -= 1
+            agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] - 1)
             return 2
         elif action == None:
             return -0.1
         else:
             dest_tile = source_tile.adjacent[action]
-            source_tile.tile_type = source_tile.init_type 
+            # TODO: fix for start tile
+            source_tile.tile_type = Tile.EMPTY 
             dest_tile.tile_type = Tile.AGENT
-            agent.update_position(dest_tile.coords)
+            agent.update_position(dest_tile.x, dest_tile.y)
             
             if dest_tile.init_type == Tile.GOAL:
                 self.done = True
@@ -60,9 +59,16 @@ class Environment():
     # returns the reward without actually doing it
     def mock_action(self, agent, action):
         if action == "gather":
-            return 10
+            return 1
         elif action == "stow":
-            return 20
+            return 2
         else:
-            return 0
+            source_tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
+            dest_tile = source_tile.adjacent[action]
+            
+            if dest_tile.init_type == Tile.GOAL:
+                return 1
+            if dest_tile.init_type == Tile.PENALTY:
+                return -1
+            return -0.1 
 

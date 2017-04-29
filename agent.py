@@ -2,27 +2,25 @@
 
 import random
 import math
+from state import State
 
 class Agent():
 
     # initializes the agent's environment and state
-    def __init__(self, environment, start_state):
+    def __init__(self, environment, x, y, carry):
         self.environment = environment
-        self.state = start_state
-        self.start_state = start_state
+        self.state = (x, y, carry) 
+        self.start_state = (x, y, carry) 
         self.qtable = dict()
         self.cumulative_reward = 0
+        self.capacity = 1
 
-    def update_position(self, coords):
-        self.state.coords = coords
-        self.state.x = coords[0]
-        self.state.y = coords[1]
+    def update_position(self, x, y):
+        self.state = (x, y, self.state[State.CARRY])
 
     # resets the agent
     def reset(self, start_state = None):
-        self.state = start_state
-        if self.state == None:
-            self.state = self.start_state
+        self.state = self.start_state
         self.cumulative_reward = 0
 
     # returns the possible actions the agent can do
