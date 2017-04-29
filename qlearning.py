@@ -66,7 +66,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
     
-    curses_step(screen, agents[0].environment.grid.board)
+        curses_step(screen, agents[0].environment.grid.board)
     kill_curses(screen)
     return agents[0].cumulative_reward
 
