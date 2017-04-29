@@ -57,8 +57,8 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
 # Q-learns for a single episode
 def qlearn_episode(agents, discount_factor, mode, epsilon):
     # run the simulation
-    screen = init_curses()
     for steps in range(1, NUM_STEPS + 1):
+        screen = init_curses()
         if agents[0].environment.done:
             break
         # give each agent a turn
