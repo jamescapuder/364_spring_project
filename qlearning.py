@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from environment import Environment
 import curses
 
+curses_enabled = False
+
 ENV_FILE = "test_grid.txt"
 
 # number of iterations to run q-learning
@@ -58,16 +60,18 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
 def qlearn_episode(agents, discount_factor, mode, epsilon):
     # run the simulation
     for steps in range(1, NUM_STEPS + 1):
-        screen = init_curses()
+        if curses_enabled:
+            screen = init_curses()
         if agents[0].environment.done:
             break
         # give each agent a turn
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
-    
-        curses_step(screen, agents[0].environment.grid.board)
-    kill_curses(screen)
+        if curses_enabled: 
+            curses_step(screen, agents[0].environment.grid.board)
+    if curses_enabled:
+        kill_curses(screen)
     return agents[0].cumulative_reward
 
 # computes alpha for updating qtable
