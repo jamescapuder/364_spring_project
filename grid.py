@@ -21,7 +21,7 @@ class Grid():
                 # Tile's constructor takes in x, y, type
                 self.board[i].append(Tile(j, i, preBoard[i][j]))
 
-        print(self.board[1][1].x, self.board[1][1].y)
+        #print(self.board[1][1].x, self.board[1][1].y)
         self.initTileAdjacent()
 
     def __str__(self):

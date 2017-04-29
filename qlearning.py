@@ -4,6 +4,7 @@
 
 import matplotlib.pyplot as plt
 from environment import Environment
+import curses
 
 #ENV_FILE = "adam_board.txt"
 ENV_FILE = "test_grid.txt"
