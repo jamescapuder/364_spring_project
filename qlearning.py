@@ -58,6 +58,7 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
 # Q-learns for a single episode
 def qlearn_episode(agents, discount_factor, mode, epsilon):
     # run the simulation
+    screen = init_curses()
     for steps in range(1, NUM_STEPS + 1):
         if agents[0].environment.done:
             break
@@ -65,7 +66,8 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
-
+        curses_step(screen, agents[0].environment.grid.board)
+            
     return agents[0].cumulative_reward
 
 # computes alpha for updating qtable
@@ -83,5 +85,27 @@ def pick_action(agent, mode, epsilon, tau):
     elif mode == SOFTMAX_MODE:
         return agent.pick_action_softmax(tau)
 
+
+# CURSES METHODS
+def init_curses():
+    stdscr = curses.initscr()
+    curses.noecho()
+    stdscr.clear()
+    stdscr.keypad(True)
+    return stdscr
+
+def kill_curses():
+    stdscr.keypad(False)
+    curses.echo()
+    # restore the terminal to its original state
+    curses.endwin()
+
+def curses_step(stdscr, board):
+    for y in range(len(board)):
+        for x in range(len(board[y])):
+            stdscr.addch(y,x, board[y][x].tile_type)
+    stdscr.refresh()
+    
+    
 if __name__ == "__main__":
     main()
