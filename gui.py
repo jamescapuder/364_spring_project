@@ -5,14 +5,14 @@ class Gui:
         self.board = grid.board
         self.height = len(grid.board)
         self.width = len(grid.board[0])
-        self.pic = picture.Picture((self.width * 50, self.height * 50))
+        self.pic = picture.Picture((self.width * 80, self.height * 80))
         self.pic.setFillColor((255, 255, 255))
         self.pic.setOutlineColor((0,0,0))
 
         self.tiles = self.createBoard()
         for y in range(self.height):
             for x in range(self.width):
-                self.tiles[x][y] = self.pic.drawRectFill(x * 50, y * 50, 50, 50)
+                self.tiles[x][y] = self.pic.drawRectFill(x * 80, y * 80, 80, 80)
         self.updateBoard(grid)
 
     def updateBoard(self, grid):
