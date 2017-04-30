@@ -8,7 +8,7 @@ from gui import Gui
 import curses
 
 curses_enabled = False
-gui_emabled = False
+gui_enabled = False
 
 ENV_FILE = "test_grid.txt"
 
