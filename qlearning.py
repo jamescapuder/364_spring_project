@@ -5,12 +5,12 @@
 import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
-#import curses
+import curses
 
 curses_enabled = False
 gui_enabled = False 
 
-ENV_FILE = "test_grid.txt"
+ENV_FILE = "dilemma.txt"
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
