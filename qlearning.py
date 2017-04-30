@@ -8,7 +8,7 @@ from gui import Gui
 import curses
 
 curses_enabled = False
-gui_enabled = False
+gui_enabled = True 
 
 ENV_FILE = "test_grid.txt"
 
@@ -55,11 +55,11 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
         environment.reset()
         if i % 100 == 0:
             print("episode", i)
-        results.append(qlearn_episode(agents, discount_factor, mode, epsilon))
+        results.append(qlearn_episode(agents, discount_factor, mode, epsilon, i))
     return results
 
 # Q-learns for a single episode
-def qlearn_episode(agents, discount_factor, mode, epsilon):
+def qlearn_episode(agents, discount_factor, mode, epsilon, episode):
     # run the simulation
     if gui_enabled:
         gui = Gui(agents[0].environment.grid)
@@ -74,7 +74,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon):
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
         if curses_enabled: 
             curses_step(screen, agents[0].environment.grid.board)
-        if gui_enabled:
+        if gui_enabled and episode == 0 or episode == 999:
             gui.updateBoard(agents[0].environment.grid)
     if curses_enabled:
         kill_curses(screen)
