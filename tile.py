@@ -6,6 +6,8 @@ class Tile:
     SOURCE = 'r'
     AGENT = 'a'
     OBSTACLE = 'x'
+    GATHERER = 'g'
+    CARRYER = 'c'
     # Test tiles
     GOAL = 'g'
     PENALTY = 'p'
