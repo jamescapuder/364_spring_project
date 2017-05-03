@@ -83,6 +83,8 @@ class Agent():
             if self.get_q(state, action) > highest:
                 highest = self.get_q(state, action)
                 result = action
+                if self.environment.grid.get_tile(self.state[State.X], self.state[State.Y]).num_adjacent_agents() > 0:
+                    self.reduced_reward = True
 
         return result
 
