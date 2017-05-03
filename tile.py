@@ -33,6 +33,9 @@ class Tile:
         if self.x != grid.width - 1:
             self.adjacent["east"] = grid.board[self.y][self.x+1]
 
+    def num_adjacent_agents(self):
+        return 
+
     def reset(self):
         self.tile_type = self.init_type
     
