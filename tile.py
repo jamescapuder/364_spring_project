@@ -36,6 +36,9 @@ class Tile:
     def num_adjacent_agents(self):
         return len([x for x in self.adjacent.values() if x.tile_type=='a'])
 
+    def adjacent_agents(self):
+        return [x for x in self.adjacent.values() if x.tile_type=='a']
+
     def reset(self):
         self.tile_type = self.init_type
     
