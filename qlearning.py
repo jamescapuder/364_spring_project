@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
 import time
-import curses
+#import curses
 
 curses_enabled = False 
-gui_enabled = False 
+gui_enabled = True
 
 
 #ENV_FILE = "test_grid.txt"
@@ -120,6 +120,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon, episode):
         if curses_enabled: 
             curses_step(screen, agents[0].environment.grid.board)
         if gui_enabled and (episode == 0 or episode == 999):
+            #time.sleep(.25)
             gui.updateBoard(agents[0].environment.grid)
     if curses_enabled:
         kill_curses(screen)
