@@ -30,10 +30,10 @@ class Environment():
                 if agent.agent_type == Tile.AGENT or agent.agent_type == Tile.CARRIER:
                     result.append("stow")
             elif agent.agent_type == Tile.GATHERER and adj_tile.tile_type == Tile.CARRIER:
-                # find the right handoffee
                 for adj_agent in self.grid.agents:
-                    if agent.state[0] == adj_tile.coords[0] and agent.state[1] == adj_tile.coords[1]:
-                        agent.handoffee = adj_agent 
+                    if adj_agent.state[0] == adj_tile.coords[0] and adj_agent.state[1] == adj_tile.coords[1]:
+                        agent.handoffee = adj_agent
+                        break
                 result.append("handoff")
         return result
                 
@@ -52,9 +52,9 @@ class Environment():
             return 0 
         elif action == "handoff":
             target_agent = agent.handoffee
-            target_agent.carry += 1
-            self.carry -= 1
-            return 0
+            target_agent.state = (target_agent.state[0], target_agent.state[1], target_agent.state[State.CARRY] + 1)
+            agent.state = (agent.state[0], agent.state[1], agent.state[State.CARRY]  - 1)
+            return 0.5
         else:
             dest_tile = source_tile.adjacent[action]
             source_tile.tile_type = Tile.EMPTY 

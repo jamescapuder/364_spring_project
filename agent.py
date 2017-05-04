@@ -16,6 +16,7 @@ class Agent():
         self.capacity = 1
         self.agent_type = agent_type
         self.reduced_reward = False
+        self.handoffee = None
 
     def update_position(self, x, y):
         self.state = (x, y, self.state[State.CARRY])

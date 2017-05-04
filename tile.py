@@ -9,7 +9,7 @@ class Tile:
     GATHERER = 'g'
     CARRIER = 'c'
     # Test tiles
-    GOAL = 'g'
+    GOAL = 'd'
     PENALTY = 'p'
 
     def __init__(self, x, y, tile_type):
@@ -37,7 +37,7 @@ class Tile:
         return len([x for x in self.adjacent.values() if x.tile_type=='a'])
 
     def adjacent_agents(self):
-        return [x for x in self.adjacent.values() if x.tile_type=='a']
+        return [x for x in self.adjacent.values() if (x.tile_type=='g' or x.tile_type=='c')]
 
     def reset(self):
         self.tile_type = self.init_type

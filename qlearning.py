@@ -123,7 +123,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon, episode):
         kill_curses(screen)
     rewards = {}
     for i in range (len(agents)):
-        rewards[i] = agent.cumulative_reward
+        rewards[i] = agents[i].cumulative_reward
     return rewards
 
 # computes alpha for updating qtable
