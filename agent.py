@@ -7,13 +7,14 @@ from state import State
 class Agent():
 
     # initializes the agent's environment and state
-    def __init__(self, environment, x, y, carry):
+    def __init__(self, environment, x, y, carry, agent_type):
         self.environment = environment
         self.state = (x, y, carry) 
         self.start_state = (x, y, carry) 
         self.qtable = dict()
         self.cumulative_reward = 0
         self.capacity = 1
+        self.agent_type = agent_type
 
     def update_position(self, x, y):
         self.state = (x, y, self.state[State.CARRY])
