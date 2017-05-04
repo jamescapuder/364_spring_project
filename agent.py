@@ -15,6 +15,7 @@ class Agent():
         self.cumulative_reward = 0
         self.capacity = 1
         self.agent_type = agent_type
+        self.reduced_reward = False
 
     def update_position(self, x, y):
         self.state = (x, y, self.state[State.CARRY])
@@ -35,6 +36,9 @@ class Agent():
         old_state = self.state 
         reward = self.environment.do_action(self, action)
         self.update_q(old_state, action, reward, alpha, discount_factor)
+        if self.reduced_reward:
+            reward = reward * 0.25
+            self.reduced_reward = False
         self.cumulative_reward += reward_modifier * reward 
         return reward 
 
@@ -80,7 +84,6 @@ class Agent():
             if self.get_q(state, action) > highest:
                 highest = self.get_q(state, action)
                 result = action
-
         return result
 
     # picks an action using the epsilon-greedy approach

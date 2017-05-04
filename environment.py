@@ -42,6 +42,8 @@ class Environment():
         source_tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
         if action == "gather":
             agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] + 1)
+            if self.grid.get_tile(agent.state[State.X], agent.state[State.Y]).num_adjacent_agents() > 0:
+                agent.reduced_reward = True
             return 0 
         elif action == "stow":
             agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] - 1)
