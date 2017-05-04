@@ -5,11 +5,12 @@
 import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
-import curses
+#import curses
 
 curses_enabled = False
 gui_enabled = False 
 
+#ENV_FILE = "test_grid.txt"
 ENV_FILE = "dilemma.txt"
 
 # number of iterations to run q-learning
@@ -34,28 +35,65 @@ def main():
     epsilon1 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
     epsilon2 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
     softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
-    
-    episodes = range(1, NUM_EPISODES + 1) 
-    plt.scatter(episodes, epsilon1, s=20, label="epsilon 0.05")
-    plt.scatter(episodes, epsilon2, s=10, label="epsilon 0.1")
-    plt.scatter(episodes, softmax, s=5, label="softmax")
+
+    agents = Environment(ENV_FILE).get_all_agents()
+
+    episodes = range(1, NUM_EPISODES + 1)
+
+    plt.figure(1)
+    for i in range(len(agents)):
+        plt.subplot(len(agents),len(agents),i+1)
+        plt.scatter(episodes, epsilon1[i], s=20, label="epsilon 0.05")
+        plt.scatter(episodes, epsilon2[i], s=10, label="epsilon 0.1")
+        plt.scatter(episodes, softmax[i], s=5, label="softmax")
+        plt.legend()
+        num = str(i+1)
+        plt.title("Cumulative Reward Over Time: Agent " + num)
+        plt.xlabel("Number of Episodes")
+        plt.ylabel("Cumulative Reward")
+
+    #Total system reward
+    epsilon1_total = [0]*NUM_EPISODES
+    epsilon2_total = [0]*NUM_EPISODES
+    softmax_total = [0]*NUM_EPISODES
+    for i in range(len(agents)):
+        curr_agent = epsilon1[i]
+        for j in range(len(curr_agent)):
+            epsilon1_total[j] += curr_agent[j]
+        curr_agent = epsilon2[i]
+        for j in range(len(curr_agent)):
+            epsilon2_total[j] += curr_agent[j]
+        curr_agent = softmax[i]
+        for j in range(len(curr_agent)):
+            softmax_total[j] += curr_agent[j]
+
+    plt.subplot(len(agents),len(agents),len(agents)+1)
+    plt.scatter(episodes, epsilon1_total, s=20, label="epsilon 0.05")
+    plt.scatter(episodes, epsilon2_total, s=10, label="epsilon 0.1")
+    plt.scatter(episodes, softmax_total, s=5, label="softmax")
     plt.legend()
-    plt.title("Cumulative Reward Over Time")
+    plt.title("Cumulative Reward Over Time: All Agents")
     plt.xlabel("Number of Episodes")
     plt.ylabel("Cumulative Reward")
+
+    plt.tight_layout()
     plt.show()
 
 # Returns a list of cumulative rewards for each of the num_episodes it runs
 def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
     agents = environment.get_all_agents()
 
-    results = []
+    results = {}
+    for i in range(len(agents)):
+        results[i] = []
 
     for i in range(num_episodes):
         environment.reset()
         if i % 100 == 0:
             print("episode", i)
-        results.append(qlearn_episode(agents, discount_factor, mode, epsilon, i))
+        episode_rewards = (qlearn_episode(agents, discount_factor, mode, epsilon, i))
+        for agent in episode_rewards.keys():
+            results[agent].append(episode_rewards[agent])
     return results
 
 # Q-learns for a single episode
@@ -78,7 +116,10 @@ def qlearn_episode(agents, discount_factor, mode, epsilon, episode):
             gui.updateBoard(agents[0].environment.grid)
     if curses_enabled:
         kill_curses(screen)
-    return agents[0].cumulative_reward
+    rewards = {}
+    for i in range (len(agents)):
+        rewards[i] = agent.cumulative_reward
+    return rewards
 
 # computes alpha for updating qtable
 def get_alpha(num_steps):
