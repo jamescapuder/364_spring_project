@@ -7,7 +7,7 @@ class Tile:
     AGENT = 'a'
     OBSTACLE = 'x'
     GATHERER = 'g'
-    CARRYER = 'c'
+    CARRIER = 'c'
     # Test tiles
     GOAL = 'g'
     PENALTY = 'p'

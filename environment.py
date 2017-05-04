@@ -24,9 +24,17 @@ class Environment():
             if tile_type == Tile.EMPTY or tile_type == Tile.GOAL or tile_type == Tile.PENALTY:
                 result.append(direction)
             elif agent.state[State.CARRY] < agent.capacity and tile_type == Tile.SOURCE:
-                result.append("gather")
+                if agent.agent_type == Tile.AGENT or agent.agent_type == Tile.GATHERER:
+                    result.append("gather")
             elif agent.state[State.CARRY] > 0 and tile_type == Tile.SPAWN:
-                result.append("stow")
+                if agent.agent_type == Tile.AGENT or agent.agent_type == Tile.CARRIER:
+                    result.append("stow")
+            elif agent.agent_type == Tile.GATHERER and adj_tile.tile_type == Tile.CARRIER:
+                # find the right handoffee
+                for adj_agent in grid.agents:
+                    if agent.coords[0] == adj_tile.coords[0] and agent.coords[1] == adj_tile.coords[1]:
+                        agent.handoffee = adj_agent 
+                result.append("handoff")
         return result
                 
     # return the reward of the action
@@ -42,6 +50,11 @@ class Environment():
             return 1 
         elif action == None:
             return 0 
+        elif action == "handoff":
+            target_agent = agent.handoffee
+            target_agent.carry += 1
+            self.carry -= 1
+            return 0
         else:
             dest_tile = source_tile.adjacent[action]
             source_tile.tile_type = Tile.EMPTY 
