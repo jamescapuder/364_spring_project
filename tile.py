@@ -6,6 +6,8 @@ class Tile:
     SOURCE = 'r'
     AGENT = 'a'
     OBSTACLE = 'x'
+    GATHERER = 'g'
+    CARRIER = 'c'
     # Test tiles
     GOAL = 'g'
     PENALTY = 'p'
@@ -30,6 +32,12 @@ class Tile:
             self.adjacent["west"] = grid.board[self.y][self.x-1]
         if self.x != grid.width - 1:
             self.adjacent["east"] = grid.board[self.y][self.x+1]
+
+    def num_adjacent_agents(self):
+        return len([x for x in self.adjacent.values() if x.tile_type=='a'])
+
+    def adjacent_agents(self):
+        return [x for x in self.adjacent.values() if x.tile_type=='a']
 
     def reset(self):
         self.tile_type = self.init_type

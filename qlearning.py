@@ -10,8 +10,11 @@ from gui import Gui
 curses_enabled = False
 gui_enabled = False 
 
+
 #ENV_FILE = "test_grid.txt"
-ENV_FILE = "dilemma.txt"
+#ENV_FILE = "dilemma.txt"
+ENV_FILE = "emergence.txt"
+
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
