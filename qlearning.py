@@ -41,12 +41,13 @@ def main():
     softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
 
     agents = Environment(ENV_FILE).get_all_agents()
+    num_agents = len(agents)
 
     episodes = range(1, NUM_EPISODES + 1)
 
     plt.figure(1)
-    for i in range(len(agents)):
-        plt.subplot(len(agents),len(agents),i+1)
+    for i in range(num_agents):
+        plt.subplot(num_agents,num_agents,i+1)
         plt.scatter(episodes, epsilon1[i], s=20, label="epsilon 0.05")
         plt.scatter(episodes, epsilon2[i], s=10, label="epsilon 0.1")
         plt.scatter(episodes, softmax[i], s=5, label="softmax")
@@ -60,7 +61,7 @@ def main():
     epsilon1_total = [0]*NUM_EPISODES
     epsilon2_total = [0]*NUM_EPISODES
     softmax_total = [0]*NUM_EPISODES
-    for i in range(len(agents)):
+    for i in range(num_agents):
         curr_agent = epsilon1[i]
         for j in range(len(curr_agent)):
             epsilon1_total[j] += curr_agent[j]
@@ -71,7 +72,7 @@ def main():
         for j in range(len(curr_agent)):
             softmax_total[j] += curr_agent[j]
 
-    plt.subplot(len(agents),len(agents),len(agents)+1)
+    plt.subplot(num_agents,num_agents,num_agents+1)
     plt.scatter(episodes, epsilon1_total, s=20, label="epsilon 0.05")
     plt.scatter(episodes, epsilon2_total, s=10, label="epsilon 0.1")
     plt.scatter(episodes, softmax_total, s=5, label="softmax")
@@ -86,9 +87,10 @@ def main():
 # Returns a list of cumulative rewards for each of the num_episodes it runs
 def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
     agents = environment.get_all_agents()
+    num_agents = len(agents)
 
     results = {}
-    for i in range(len(agents)):
+    for i in range(num_agents):
         results[i] = []
 
     for i in range(num_episodes):
