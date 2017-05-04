@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
 import curses
+import time
 
-curses_enabled = False
+curses_enabled = False 
 gui_enabled = False 
 
 ENV_FILE = "emergence.txt"
@@ -64,6 +65,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon, episode):
     if gui_enabled and (episode == 0 or episode == 999):
         gui = Gui(agents[0].environment.grid)
     for steps in range(1, NUM_STEPS + 1):
+        #time.sleep(0.5)
         if curses_enabled:
             screen = init_curses()
         if agents[0].environment.done:
