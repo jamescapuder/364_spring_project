@@ -1,4 +1,5 @@
 import picture
+from tile import Tile
 
 class Gui:
     def __init__(self, grid):
@@ -19,16 +20,20 @@ class Gui:
         board = grid.board
         for y in range(self.height):
             for x in range(self.width):
-                if board[y][x].tile_type == 'o': # Empty
-                    self.tiles[x][y].changeFillColor((255, 255, 255))
-                if board[y][x].tile_type == 's': # Spawn
-                    self.tiles[x][y].changeFillColor((0, 0, 255))
-                if board[y][x].tile_type == 'r': # Source
-                    self.tiles[x][y].changeFillColor((255, 255, 0))
-                if board[y][x].tile_type == "a": # Agent
-                    self.tiles[x][y].changeFillColor((255, 0, 0))
-                if board[y][x].tile_type == "x": # Obstacle
-                    self.tiles[x][y].changeFillColor((0, 255, 0))
+                if board[y][x].tile_type == Tile.EMPTY: # Empty
+                    self.tiles[x][y].changeFillColor((255, 255, 255)) # White
+                if board[y][x].tile_type == Tile.SPAWN: # Spawn
+                    self.tiles[x][y].changeFillColor((0, 0, 255)) # Blue
+                if board[y][x].tile_type == Tile.SOURCE: # Source
+                    self.tiles[x][y].changeFillColor((255, 255, 0)) # Gold
+                if board[y][x].tile_type == Tile.AGENT: # Agent
+                    self.tiles[x][y].changeFillColor((0, 255, 0)) # Green
+                if board[y][x].tile_type == Tile.OBSTACLE: # Obstacle
+                    self.tiles[x][y].changeFillColor((80, 80, 80)) # Grey
+                if board[y][x].tile_type == Tile.CARRIER: # carrier
+                    self.tiles[x][y].changeFillColor((120, 255, 120)) # Light green
+                if board[y][x].tile_type == Tile.GATHERER: # gatherer
+                    self.tiles[x][y].changeFillColor((0, 165, 0)) # Dark green
         self.pic.display()
 
     def createBoard(self):
