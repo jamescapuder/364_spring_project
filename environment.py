@@ -30,13 +30,20 @@ class Environment():
                 if agent.agent_type == Tile.AGENT or agent.agent_type == Tile.CARRIER:
                     result.append("stow")
             elif agent.agent_type == Tile.GATHERER and adj_tile.tile_type == Tile.CARRIER:
-                for adj_agent in self.grid.agents:
-                    if adj_agent.state[0] == adj_tile.coords[0] and adj_agent.state[1] == adj_tile.coords[1]:
-                        agent.handoffee = adj_agent
-                        break
+                agent.handsoffee = self.get_agent_on_tile(adj_tile)
                 result.append("handoff")
+            elif agent.agent_type == Tile.THIEF:
+                agent_on_tile = self.get_agent_on_tile(adj_tile)
+                if agent_on_tile != None and agent_on_tile.state[State.CARRY] > 0:
+                    result.append("steal")
         return result
-                
+
+    def get_agent_on_tile(self, tile):
+        for agent in self.grid.agents:
+            if agent.state[0] == tile.coords[0] and agent.state[1] == tile.coords[1]:
+                return agent
+        return None
+
     # return the reward of the action
     def do_action(self, agent, action):
         source_tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
