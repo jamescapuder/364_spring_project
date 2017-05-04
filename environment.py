@@ -30,8 +30,9 @@ class Environment():
                 if agent.agent_type == Tile.AGENT or agent.agent_type == Tile.CARRIER:
                     result.append("stow")
             elif agent.agent_type == Tile.GATHERER and adj_tile.tile_type == Tile.CARRIER:
-                agent.handsoffee = self.get_agent_on_tile(adj_tile)
-                result.append("handoff")
+                if agent.state[State.CARRY] > 0:
+                    agent.handsoffee = self.get_agent_on_tile(adj_tile)
+                    result.append("handoff")
             elif agent.agent_type == Tile.THIEF:
                 agent_on_tile = self.get_agent_on_tile(adj_tile)
                 if agent_on_tile != None and agent_on_tile.state[State.CARRY] > 0:

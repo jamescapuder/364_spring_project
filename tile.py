@@ -8,7 +8,7 @@ class Tile:
     OBSTACLE = 'x'
     GATHERER = 'g'
     CARRIER = 'c'
-    THEIF = 't'
+    THIEF = 't'
     # Test tiles
     GOAL = 'd'
     PENALTY = 'p'
