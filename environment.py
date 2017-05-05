@@ -36,7 +36,7 @@ class Environment():
             elif agent.agent_type == Tile.THIEF:
                 agent_on_tile = self.get_agent_on_tile(adj_tile)
                 if agent_on_tile != None and agent_on_tile.state[State.CARRY] > 0:
-                    agent.vicim = self.get_agent_on_tile(adj_tile)
+                    agent.victim = agent_on_tile 
                     result.append("steal")
         return result
 
