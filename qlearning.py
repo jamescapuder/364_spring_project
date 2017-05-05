@@ -6,16 +6,16 @@ import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
 import time
-#import curses
+import curses
 
 curses_enabled = False 
 gui_enabled = False 
 
-
 #ENV_FILE = "test_grid.txt"
 #ENV_FILE = "dilemma.txt"
-ENV_FILE = "emergence.txt"
-
+#ENV_FILE = "agents_everywhere.txt"
+#ENV_FILE = "emergence.txt"
+#ENV_FILE = "factions.txt"
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
@@ -117,7 +117,7 @@ def qlearn_episode(agents, discount_factor, mode, epsilon, episode):
         for agent in agents:
             action = pick_action(agent, mode, epsilon, TAU)
             agent.do_action(action, get_alpha(steps), discount_factor, get_reward_modifier(steps)) 
-        if curses_enabled: 
+        if curses_enabled and episode == 999 and mode == SOFTMAX_MODE: 
             curses_step(screen, agents[0].environment.grid.board)
         if gui_enabled and (episode == 0 or episode == 999):
             #time.sleep(.25)

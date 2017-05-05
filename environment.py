@@ -36,6 +36,7 @@ class Environment():
             elif agent.agent_type == Tile.THIEF:
                 agent_on_tile = self.get_agent_on_tile(adj_tile)
                 if agent_on_tile != None and agent_on_tile.state[State.CARRY] > 0:
+                    agent.vicim = self.get_agent_on_tile(adj_tile)
                     result.append("steal")
         return result
 
@@ -62,7 +63,12 @@ class Environment():
             target_agent = agent.handoffee
             target_agent.state = (target_agent.state[0], target_agent.state[1], target_agent.state[State.CARRY] + 1)
             agent.state = (agent.state[0], agent.state[1], agent.state[State.CARRY]  - 1)
-            return 0.5
+            return 1 
+        elif action == "steal":
+            target_agent = agent.victim
+            target_agent.state = (target_agent.state[0], target_agent.state[1], target_agent.state[State.CARRY] - 1)
+            agent.state = (agent.state[0], agent.state[1], agent.state[State.CARRY]  + 1)
+            return 1
         else:
             dest_tile = source_tile.adjacent[action]
             source_tile.tile_type = Tile.EMPTY 
