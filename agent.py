@@ -38,9 +38,6 @@ class Agent():
         old_state = self.state 
         reward = self.environment.do_action(self, action)
         self.update_q(old_state, action, reward, alpha, discount_factor)
-        if self.reduced_reward:
-            reward = reward * 0.25
-            self.reduced_reward = False
         self.cumulative_reward += reward_modifier * reward 
         return reward 
 

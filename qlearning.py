@@ -12,10 +12,10 @@ curses_enabled = False
 gui_enabled = False 
 
 #ENV_FILE = "test_grid.txt"
-#ENV_FILE = "dilemma.txt"
+ENV_FILE = "dilemma.txt"
 #ENV_FILE = "agents_everywhere.txt"
-#ENV_FILE = "emergence2.txt"
-ENV_FILE = "factions.txt"
+#ENV_FILE = "emergence.txt"
+#ENV_FILE = "factions2.txt"
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
@@ -36,8 +36,11 @@ TAU = 0.1
 # q-learns the grid environment with epsilon-greedy and softmax
 # approaches for selecting actions and graphs the results
 def main():
+    print("Epsilon:", EPSILON1)
     epsilon1 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON1)
+    print("Epsilon:", EPSILON2)
     epsilon2 = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, EPSILON_MODE, EPSILON2)
+    print("Softmax")
     softmax = qlearning(Environment(ENV_FILE), NUM_EPISODES, DISCOUNT_FACTOR, SOFTMAX_MODE)
 
     agents = Environment(ENV_FILE).get_all_agents()
@@ -96,7 +99,7 @@ def qlearning(environment, num_episodes, discount_factor, mode, epsilon=0):
     for i in range(num_episodes):
         environment.reset()
         if i % 100 == 0:
-            print("episode", i)
+            print("episode", i, "(out of 1000)")
         episode_rewards = (qlearn_episode(agents, discount_factor, mode, epsilon, i))
         for agent in episode_rewards.keys():
             results[agent].append(episode_rewards[agent])

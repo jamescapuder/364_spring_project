@@ -46,16 +46,28 @@ class Environment():
                 return agent
         return None
 
+    def adjacent_resource(self, agent):
+        tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
+        for direction in tile.adjacent: 
+            adj_tile = tile.adjacent[direction]
+            tile_type = adj_tile.tile_type
+            if tile_type == Tile.SOURCE:
+                return adj_tile
+        return tile
+
     # return the reward of the action
     def do_action(self, agent, action):
         source_tile = self.grid.get_tile(agent.state[State.X], agent.state[State.Y])
         if action == "gather":
             agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] + 1)
-            if self.grid.get_tile(agent.state[State.X], agent.state[State.Y]).num_adjacent_agents() > 0:
+            if self.adjacent_resource(agent).num_adjacent_agents() > 1:
                 agent.reduced_reward = True
             return 0 
         elif action == "stow":
             agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] - 1)
+            if agent.reduced_reward:
+                agent.reduced_reward = False
+                return 0.25
             return 1 
         elif action == None:
             return 0 
