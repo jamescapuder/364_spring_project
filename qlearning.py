@@ -15,7 +15,7 @@ gui_enabled = False
 #ENV_FILE = "dilemma.txt"
 #ENV_FILE = "agents_everywhere.txt"
 #ENV_FILE = "emergence.txt"
-#ENV_FILE = "factions.txt"
+ENV_FILE = "factions.txt"
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
