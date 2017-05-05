@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
 import time
-import curses
+#import curses
 
 curses_enabled = False 
 gui_enabled = False 
@@ -14,8 +14,8 @@ gui_enabled = False
 #ENV_FILE = "test_grid.txt"
 #ENV_FILE = "dilemma.txt"
 #ENV_FILE = "agents_everywhere.txt"
-ENV_FILE = "emergence.txt"
-#ENV_FILE = "factions.txt"
+#ENV_FILE = "emergence2.txt"
+ENV_FILE = "factions.txt"
 
 # number of iterations to run q-learning
 NUM_EPISODES = 1000
@@ -42,12 +42,12 @@ def main():
 
     agents = Environment(ENV_FILE).get_all_agents()
     num_agents = len(agents)
+    print(num_agents)
 
     episodes = range(1, NUM_EPISODES + 1)
 
-    plt.figure(1)
     for i in range(num_agents):
-        plt.subplot(num_agents,num_agents,i+1)
+        plt.figure(i+1)
         plt.scatter(episodes, epsilon1[i], s=20, label="epsilon 0.05")
         plt.scatter(episodes, epsilon2[i], s=10, label="epsilon 0.1")
         plt.scatter(episodes, softmax[i], s=5, label="softmax")
@@ -72,7 +72,7 @@ def main():
         for j in range(len(curr_agent)):
             softmax_total[j] += curr_agent[j]
 
-    plt.subplot(num_agents,num_agents,num_agents+1)
+    plt.figure(num_agents + 1)
     plt.scatter(episodes, epsilon1_total, s=20, label="epsilon 0.05")
     plt.scatter(episodes, epsilon2_total, s=10, label="epsilon 0.1")
     plt.scatter(episodes, softmax_total, s=5, label="softmax")
