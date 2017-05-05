@@ -9,7 +9,7 @@ import time
 #import curses
 
 curses_enabled = False 
-gui_enabled = True
+gui_enabled = False 
 
 
 #ENV_FILE = "test_grid.txt"
