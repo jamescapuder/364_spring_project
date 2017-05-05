@@ -52,7 +52,7 @@ class Grid():
                     self.sources.append(Source(y.x, y.y))
                 if y.tile_type == Tile.SPAWN:
                     self.spawns.append(Spawn(y.x, y.y))
-                if y.tile_type == Tile.AGENT or y.tile_type == Tile.GATHERER or y.tile_type == Tile.CARRIER:
+                if y.tile_type == Tile.AGENT or y.tile_type == Tile.GATHERER or y.tile_type == Tile.CARRIER or y.tile_type == Tile.THIEF:
                     self.agents.append(Agent(self.environment, y.x, y.y, 0, y.tile_type))
                 
     def get_tile(self, x, y):

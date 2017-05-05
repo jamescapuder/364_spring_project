@@ -58,7 +58,7 @@ class Environment():
             agent.state = (agent.state[State.X], agent.state[State.Y], agent.state[State.CARRY] - 1)
             return 1 
         elif action == None:
-            return -0.1 
+            return 0 
         elif action == "handoff":
             target_agent = agent.handoffee
             target_agent.state = (target_agent.state[0], target_agent.state[1], target_agent.state[State.CARRY] + 1)
@@ -82,7 +82,7 @@ class Environment():
                 self.done = True
                 return -1
 
-            return -0.1
+            return 0
 
     # returns the reward without actually doing it
     def mock_action(self, agent, action):
