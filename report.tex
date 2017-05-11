@@ -15,7 +15,7 @@
 \usepackage{minted}
 \usemintedstyle{vs}
 \usepackage{xparse}
-
+\usepackage{float}
 \newtheorem{lemma}{Lemma}
 \newtheorem*{lem}{Lemma}
 \newtheorem{definition}{Definition}
@@ -90,7 +90,9 @@ This section details the implementation of the scripts and classes used in our f
 
 \subsection{Tile}
 
-The class used to represent each square on the grid in our simulation is \codeword{Tile}. The constructor, \mintinline{Python}{def __init__(self, x, y, tile_type)}, takes as arguments the $x$ and $y$ positions of the \codeword{Tile} on the grid, and a character representing what type of tile to initialize. These are saved as instance variables; $x, y$ are static, but \mintinline{Python}{tile_type} along with a variable \mintinline{Python}{self.init_type} to save the initial type of the tile so that the grid can be reset to it's initial configuration. The following table contains the mapping of characters to the tile types the represent.
+The class used to represent each square on the grid in our simulation is \codeword{Tile}.
+
+The constructor, \mintinline{Python}{def __init__(self, x, y, tile_type)}, takes as arguments the $x$ and $y$ positions of the \codeword{Tile} on the grid, and a character representing what type of tile to initialize. These are saved as instance variables; $x, y$ are static, but \mintinline{Python}{tile_type} along with a variable \mintinline{Python}{self.init_type} to save the initial type of the tile so that the grid can be reset to it's initial configuration. The following table contains the mapping of characters to the tile types the represent.
 
 \begin{table}[h]
 \centering
@@ -118,15 +120,21 @@ The class \codeword{State} simply holds constants that are used to clarify the i
 
 \subsection{Source}
 
-A source\footnote{refered to as such in the code, but as a resource in the following results section} is an object from which agents can collect energy to return to the spawn. The constructor, \mintinline{Python}{__init__(self, x, y, capacity=100000)}, takes $xy$ coordinates and a capacity, which is the maximum amount that can be farmed from the source. The \mintinline{Python}{gather(self)} method is called whenever an agent gathers from this source, and returns a boolean value indicating whether the action was successful (false if \mintinline{Python}{self.capacity==0}, true otherwise). Similarly to \codeword{Tile}, \codeword{Source} has a reset method that reverts \mintinline{Python}{self.capacity} to the value with which it was initialized.
+A source\footnote{refered to as such in the code, but as a resource in the following results section} is an object from which agents can collect energy to return to the spawn.
+
+The constructor, \mintinline{Python}{__init__(self, x, y, capacity=100000)}, takes $xy$ coordinates and a capacity, which is the maximum amount that can be farmed from the source. The \mintinline{Python}{gather(self)} method is called whenever an agent gathers from this source, and returns a boolean value indicating whether the action was successful (false if \mintinline{Python}{self.capacity==0}, true otherwise). Similarly to \codeword{Tile}, \codeword{Source} has a reset method that reverts \mintinline{Python}{self.capacity} to the value with which it was initialized.
 
 \subsection{Spawn}
 
-\codeword{Spawn} objects are those to which agents return gathered resources. The constructor, \mintinline{Python}{__init__(self, x,y)}, takes only the $xy$ position of the \codeword{Spawn} instance on the grid. The \mintinline{Python}{dropoff(self)} method increments a counter representing the total number of resources returned to this \codeword{Spawn} whenever an agent performs that action, and the reset method reverts that counter to 0.
+\codeword{Spawn} objects are those to which agents return gathered resources.
+
+The constructor, \mintinline{Python}{__init__(self, x,y)}, takes only the $xy$ position of the \codeword{Spawn} instance on the grid. The \mintinline{Python}{dropoff(self)} method increments a counter representing the total number of resources returned to this \codeword{Spawn} whenever an agent performs that action, and the reset method reverts that counter to 0.
 
 \subsection{Agent}
 
-\codeword{Agent} is a more substantial class than those previously discussed. The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, agent_type)}, accepts an environment object, the starting $xy$ position on the grid, a boolean \mintinline{Python}{carry}, and the type of agent to be initialized. The agent's initial state is then constructed as the three-tuple of \mintinline{Python}{(x, y, carry)}. Instance variables include the agent's Q-table as a dictionary, cumulative reward, capacity (number of resources the agent can carry, always 1), a boolean representing whether the agent's reward should be reduced (for use in the prisoner's dilemma scenario), two initially null variables indicating the agent's victim (for the thief scenario), and the agent to hand resources to (in the collaborative scenario).
+\codeword{Agent} is a more substantial class than those previously discussed.
+
+The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, agent_type)}, accepts an environment object, the starting $xy$ position on the grid, a boolean \mintinline{Python}{carry}, and the type of agent to be initialized. The agent's initial state is then constructed as the three-tuple of \mintinline{Python}{(x, y, carry)}. Instance variables include the agent's Q-table as a dictionary, cumulative reward, capacity (number of resources the agent can carry, always 1), a boolean representing whether the agent's reward should be reduced (for use in the prisoner's dilemma scenario), two initially null variables indicating the agent's victim (for the thief scenario), and the agent to hand resources to (in the collaborative scenario).
 
 \codeword{Agent} has methods:
 \begin{itemize}
@@ -146,12 +154,14 @@ A source\footnote{refered to as such in the code, but as a resource in the follo
 
 \subsection{Grid}
 
-\codeword{Grid} is a relatively simple class responsible for building and managing a board of tile objects.The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, environment)}, takes an environment object and a file path pointing to a text file containing an initial board configuration. It initializes lists of agents, spawns, and sources, splits the contents of the text file into a 2D list, infers \mintinline{Python}{self.width, self.height} from that list, and finally builds up the actual board by reading each character in the 2D list, and constructing a new \codeword{Tile} object for each one with the appropriate type and $xy$ position.
+\codeword{Grid} is a relatively simple class responsible for building and managing a board of tile objects.
+
+The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, environment)}, takes an environment object and a file path pointing to a text file containing an initial board configuration. It initializes lists of agents, spawns, and sources, splits the contents of the text file into a 2D list, infers \mintinline{Python}{self.width, self.height} from that list, and finally builds up the actual board by reading each character in the 2D list, and constructing a new \codeword{Tile} object for each one with the appropriate type and $xy$ position.
 
 \codeword{Grid} implements the following methods:
 
 \begin{itemize}
-\item \mintinline{Python}{initTileAdjacent(self)}, which is called after \mintinline{Python}{self.board} is constructed. This method populates the lists \mintinline{Python}{self.agents, self.spawns, self.sources}, and calls each tile's \mintinline{Python}{initAdjacent()} method.
+\item \mintinline{Python}{initTileAdjacent(self)}, which is called after \mintinline{Python}{self.board} is constructed. This method populates the agent, spawn, and sources lists, and calls each tile's \mintinline{Python}{initAdjacent()} method.
 \item \mintinline{Python}{get_tile(self, x, y)} returns the tile at \mintinline{Python}{self.board[y][x]}.
 \item \mintinline{Python}{reset(self)} which calls the appropriate reset method on all elements of the three lists discussed above, as well as the reset method of each tile.
 \item \mintinline{Python}{reset_all(self, components)} which simply takes a list of elements and calls that element's reset method.
@@ -159,7 +169,9 @@ A source\footnote{refered to as such in the code, but as a resource in the follo
 
 \subsection{Environment}
 
-Now that we have the various components of our simulation, we cover the \codeword{Environment} class, which effectively serves as the shared point between \codeword{Grid} and \codeword{Agent}, helping to define how the agents are allowed to move around the grid. The constructor for \codeword{Environment}, \mintinline{Python}{__init__(self, fname)}, takes just a file name, which is used to initialize a \codeword{Grid} instance. An important note is that the constructors for both \codeword{Grid} and \codeword{Agent} both take an environment object, so the environment from which this \codeword{Grid} is created, is propagated to all of these objects. The only instance variables of \codeword{Environment} are the \codeword{Grid} and a boolean value indicating whether the current episode is finished.
+Now that we have the various components of our simulation, we cover the \codeword{Environment} class, which effectively serves as the shared point between \codeword{Grid} and \codeword{Agent}, helping to define how the agents are allowed to move around the grid.
+
+The constructor for \codeword{Environment}, \mintinline{Python}{__init__(self, fname)}, takes just a file name, which is used to initialize a \codeword{Grid} instance. An important note is that the constructors for both \codeword{Grid} and \codeword{Agent} both take an environment object, so the environment from which this \codeword{Grid} is created, is propagated to all of these objects. The only instance variables of \codeword{Environment} are the \codeword{Grid} and a boolean value indicating whether the current episode is finished.
 
 \codeword{Environment} contains the following methods:
 
@@ -174,9 +186,9 @@ Now that we have the various components of our simulation, we cover the \codewor
   
 \subsection{Qlearning}
 
-This is the script that actually runs the episodes, plots the data, and manages the basic GUI (enabled by setting the gui_enabled boolean to True). \mintinline{Python}{ENV_FILE} is set to the name of a text file containing the initial configurations for a scenario, only one of which can be uncommented at a time. \mintinline{Python}{NUM_EPISODES, NUM_STEPS} define the number of episodes to run for each Q-learning method, and the number of steps per episode, respectively. \mintinline{Python}{EPSILON_MODE, EPSILON1, EPSILON2} are, in order: a 0 or 1, representing whether the epsilon greedy approach should be performed, the first value for epsilon to use for simulation, and the second epsilon value to use for simulation. \mintinline{Python}{SOFTMAX_MODE} determines whether the softmax approach should be performed, and \mintinline{Python}{TAU} specifies the tau value for use in softmax.
+This is the script that actually runs the episodes, plots the data, and manages the basic GUI (enabled by setting the \mintinline{Python}{gui_enabled} boolean to True). \mintinline{Python}{ENV_FILE} is set to the name of a text file containing the initial configurations for a scenario, only one of which can be uncommented at a time. \mintinline{Python}{NUM_EPISODES, NUM_STEPS} define the number of episodes to run for each Q-learning method, and the number of steps per episode, respectively. \mintinline{Python}{EPSILON_MODE, EPSILON1, EPSILON2} are, in order: a 0 or 1, representing whether the epsilon greedy approach should be performed, the first value for epsilon to use for simulation, and the second epsilon value to use for simulation. \mintinline{Python}{SOFTMAX_MODE} determines whether the softmax approach should be performed, and \mintinline{Python}{TAU} specifies the tau value for use in softmax.
 
-The main method calls \mintinline{Python}{qlearning(environment, num_episodes, discount_factor, mode, epsilon=0)} for each enabled learning mode, parameterized by the flags set at the beginning of the script. This method in turn runs each episode by calling \mintinline{Python}{qlearn_episode(agents,discount_factor, mode, epsilon, episode)}, which returns a list of the cumulative rewards earned by each agent to \mintinline{Python}{qlearning(...)}. Each episode's results are saved in a list that is returned to main, and the information is then plotted with \mintinline{Python}{matplotlib}.  
+The main method calls \mintinline{Python}{qlearning(...)} for each enabled learning mode, parameterized by the flags set at the beginning of the script. This method in turn runs each episode by calling \mintinline{Python}{qlearn_episode(agents,discount_factor, mode, epsilon, episode)}, which returns a list of the cumulative rewards earned by each agent to \mintinline{Python}{qlearning(...)}. Each episode's results are saved in a list that is returned to main, and the information is then plotted with \mintinline{Python}{matplotlib}.  
 
 
 \section{Results}
@@ -198,7 +210,7 @@ oooooosor\\
 }
 "o" means empty tile, "s" means spawn, "r" means resource, "a" means agent starting point, and "x" means blockade. We get the following results for the agent when running it for 1000 episodes in this environment.\\
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
 \includegraphics[width=.7\textwidth]{ai-env1.png}
 \caption{Single agent cumulative reward, 1000 episodes.}
@@ -227,7 +239,7 @@ We generated graphs for each agent individually and for the environment as a who
 
 %[insert ai-env2-agent1.png]\\
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2-agent1.png}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -236,7 +248,7 @@ We generated graphs for each agent individually and for the environment as a who
 For the epsilon algorithms, agent 1 again never finds the closer resource, spawn pair, and its performance is mediocre. However, this also means that it does not hurt the other agent. The softmax algorithm is again able to find the closer pair. This time, the agent does not gain as much reward as before due to overcrowding, but it still gains more than when it was at the farther away resource. We now analyze agent 2 individually.
 %[insert ai-env2-agent2.png]\\
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2-agent2}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -248,7 +260,7 @@ For the epsilon algorithms, agent 2 learns pretty quickly that staying where it 
 
 %[insert ai-env2.png]\\
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -279,7 +291,7 @@ In this environment, we add a thief (agent 1) who's goal is to steal resources f
 
 %[insert thief-agent1.png]
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=.7\textwidth]{thief-agent1}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -291,7 +303,7 @@ We notice that the thief is only successful with the softmax algorithm. Even the
 
 %[insert thief-agent2.png]
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
   \includegraphics[width=.7\textwidth]{thief-agent2}
   %\caption{Environment 2, agent 1 cumulative reward}
