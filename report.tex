@@ -320,20 +320,22 @@ Ultimately what makes this environment interesting, is to think about the agent'
 
 \section{Future Work}
 
+The next step we would take in this project is to add in shared Q-tables. This would change the motivation of each agent, and instead of being greedy they would try to maximize the system's total utility. This could result in new emergent behaviors such as cooperation between thieves and their victims, where they alternate between stealing the resource and turning it in. It would also greatly increase the cooperation between gatherers and carriers, assuming we modified their states to include the location of the other.
+
 \section{Conclusion}
 
 	In this project, we build a simplified clone of Screeps that allowed for direct control over our experiments. We applied Q-learning techniques in a number of environments and observed the patterns of behavior that emerged. In the first environment which contained only one agent, we found that the softmax approach was able to find the most optimal solution while the epsilon-greedy approaches only found a sub-optimal solution. In the prisoners dilemma environment, we found that the system's total utility was lower when the agents favored exploration over exploitation. This is because they are greedy and non-communicating, so each will choose whichever strategy maximizes its own utility. Given the opportunity, the agent which starts far away from the optimal source-spawn path will go there even at the expense of the other. 
 	
 	In the environment which divides up the responsibility between gatherers and carriers, we found that cooperation is extremely hard without communication. Because each agent doesn't contain the other agent's location within its state, its Q-table fails to direct it towards the nearest potential handoff but instead towards the spot where it has most often handed off in the past. We found that when the agents met, it was usually a coincidence, indicating that little meaningful learning occurred. With the introduction of a thief agent, a whole new layer of complexity was added. Because the thief and its victim are both using Q-learning, their greedy approaches lead to a stalemate. If the thief starts camping the spawn, then its victim will learn to avoid the spawn. The behavior that emerges is "the first to move loses", where making the first move gives the other agent the advantage. This makes perfect sense in a pair of non-communicating greedy agents, because neither is willing take a negative reward by making a move that its opponent can exploit.
-	
-	The next step we would take in this project is to add in shared Q-tables. This would change the motivation of each agent, and instead of being greedy they would try to maximize the system's total utility. This could result in other interesting emergent behaviors such as cooperation between thieves and their victims, where they alternate between stealing the resource and turning it in. In the end, we created a system that allowed for the unobstructed observation of the performance of Q-learning methods in multiagent systems. Using this system, we modeled a number of different scenarios and explored the emergent behavior of non-communicating greedy agents. 
+
+In the end, we created a system that allowed for the unobstructed observation of the performance of Q-learning methods in multiagent systems. Using this system, we modeled a number of different scenarios and explored the emergent behavior of non-communicating greedy agents.   
 
 \section{References}
 
 
 \href{http://www.cs.mun.ca/~dchurchill/pdf/starcraft_survey.pdf}{A review of AI in real time strategy games.}
 
-This paper provides a survey of current research on AI applied to real-time strategy games, with a focus on the game Starcraft. Most real-time strategy games, including Starcraft, have some similarities in the objectives and possible actions, so we can apply this general research to Screeps. Some of the techniques discussed involve observing good human players and scraping data to input to learning algorithms. Unfortunately, we cannot apply those methods to Screeps, as it can only be controlled by AI. The paper does discuss some strategies that we can apply without observing human data and explains current open problems and challenges.
+This paper provides a survey of current research on AI applied to real-time strategy games, with a focus on the game Starcraft. Most real-time strategy games, including Starcraft, have some similarities in the objectives and possible actions, so we had hoped to apply some of the information to Screeps before switching to our own implementation. Some of the techniques discussed involve observing good human players and scraping data to input to learning algorithms. Unfortunately, we cannot apply those methods to our environment.
 
 
 \noindent\href{https://adeshpande3.github.io/Deep-Learning-Research-Review-Week-2-Reinforcement-Learning}{Reinforcement Learning}
@@ -343,7 +345,7 @@ This article discusses the relative merits of supervised learning, unsupervised 
 
 \noindent\href{http://web.mysites.ntu.edu.sg/yhlow/public/Shared\%20Documents/papers/indin06-emergent.pdf}{A Survey of Emergent Behavior and Its Impacts in Agent-based Systems}
 
-This paper is about emerging intelligence and will help us improve our understanding of how emergence works and how it can be used in multi-agent systems. It is not about Screeps specifically, but about multi-agent systems in general. We hope to be able to apply the research to Screeps.
+This paper is about emerging intelligence and helped us improve our understanding of how emergence works and how it can be used in multi-agent systems.
 
 
 
