@@ -86,7 +86,7 @@ As discussed above, one shortcoming of \textit{Screeps} for this project was the
 
 \section{Implementation}
 
-This section details the implementation of the scripts and classes used in our framework: \textit{tile.py, state.py, source.py, spawn.py, agent.py, grid.py, environment.py, qlearning.py} and finally, \textit{gui.py}.
+This section details the implementation of the scripts and classes used in our framework: \textit{tile.py, state.py, source.py, spawn.py, agent.py, grid.py, environment.py,} and finally \textit{qlearning.py}.
 
 \subsection{Tile}
 
@@ -104,6 +104,9 @@ s & Spawn \\ \hline
 r & Source \\ \hline
 a & Agent \\ \hline
 x & Obstacle \\ \hline
+g & Gatherer \\ \hline
+c & Carrier \\ \hline
+t & Thief \\ \hline
 \end{tabular}
 \end{table}
 
@@ -143,7 +146,7 @@ A source\footnote{refered to as such in the code, but as a resource in the follo
 
 \subsection{Grid}
 
-The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, environment)}, takes an environment object and a file path pointing to a text file containing an initial board configuration. It initializes lists of agents, spawns, and sources, splits the contents of the text file into a 2D list, infers \mintinline{Python}{self.width, self.height} from that list, and finally builds up the actual board by reading each character in the 2D list, and constructing a new \codeword{Tile} object for each one with the appropriate type and $xy$ position.
+\codeword{Grid} is a relatively simple class responsible for building and managing a board of tile objects.The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, environment)}, takes an environment object and a file path pointing to a text file containing an initial board configuration. It initializes lists of agents, spawns, and sources, splits the contents of the text file into a 2D list, infers \mintinline{Python}{self.width, self.height} from that list, and finally builds up the actual board by reading each character in the 2D list, and constructing a new \codeword{Tile} object for each one with the appropriate type and $xy$ position.
 
 \codeword{Grid} implements the following methods:
 
@@ -156,8 +159,24 @@ The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, e
 
 \subsection{Environment}
 
+Now that we have the various components of our simulation, we cover the \codeword{Environment} class, which effectively serves as the shared point between \codeword{Grid} and \codeword{Agent}, helping to define how the agents are allowed to move around the grid. The constructor for \codeword{Environment}, \mintinline{Python}{__init__(self, fname)}, takes just a file name, which is used to initialize a \codeword{Grid} instance. An important note is that the constructors for both \codeword{Grid} and \codeword{Agent} both take an environment object, so the environment from which this \codeword{Grid} is created, is propagated to all of these objects. The only instance variables of \codeword{Environment} are the \codeword{Grid} and a boolean value indicating whether the current episode is finished.
+
+\codeword{Environment} contains the following methods:
+
+\begin{itemize}
+\item \mintinline{Python}{get_all_agents(self)}, which returns the list of agents stored in \mintinline{Python}{self.grid}
+\item \mintinline{Python}{get_agent_actions(self, agent)}, which takes an agent and returns a list of legal moves the agent can take. This list is constructed by a series of boolean checks on the type of tile the agent is on and the agent's state, and can modify the agent's \mintinline{Python}{victim} and \mintinline{Python}{handoffee} variables when appropriate.
+\item \mintinline{Python}{get_agent_on_tile(self, tile)} returns the agent on the specified tile, if one exists. This is used by \mintinline{Python}{get_agent_actions(...)} when interaction between agents is allowed.
+\item \mintinline{Python}{adjacent_resource(self, agent)} returns a tile adjacent to \mintinline{Python}{agent} that has a source, or simply \mintinline{Python}{agent}'s current tile if no adjacent source exists.
+\item \mintinline{Python}{do_action(self,agent,action)} takes an agent and an action, and returns the reward for that action. The difference between this and \mintinline{Python}{Agent.do_action(...)} is that this method performs the state changes on agents, the modification of the board, and the setting of instance variables only, and relies on the \mintinline{Python}{agent} to perform all additional calculations to transform the raw value of the reward returned here into what actually ends up in the \mintinline{Python}{agent}'s Q-table.
+\end{itemize}
+
+  
 \subsection{Qlearning}
 
+This is the script that actually runs the episodes, plots the data, and manages the basic GUI (enabled by setting the gui_enabled boolean to True). \mintinline{Python}{ENV_FILE} is set to the name of a text file containing the initial configurations for a scenario, only one of which can be uncommented at a time. \mintinline{Python}{NUM_EPISODES, NUM_STEPS} define the number of episodes to run for each Q-learning method, and the number of steps per episode, respectively. \mintinline{Python}{EPSILON_MODE, EPSILON1, EPSILON2} are, in order: a 0 or 1, representing whether the epsilon greedy approach should be performed, the first value for epsilon to use for simulation, and the second epsilon value to use for simulation. \mintinline{Python}{SOFTMAX_MODE} determines whether the softmax approach should be performed, and \mintinline{Python}{TAU} specifies the tau value for use in softmax.
+
+The main method calls \mintinline{Python}{qlearning(environment, num_episodes, discount_factor, mode, epsilon=0)} for each enabled learning mode, parameterized by the flags set at the beginning of the script. This method in turn runs each episode by calling \mintinline{Python}{qlearn_episode(agents,discount_factor, mode, epsilon, episode)}, which returns a list of the cumulative rewards earned by each agent to \mintinline{Python}{qlearning(...)}. Each episode's results are saved in a list that is returned to main, and the information is then plotted with \mintinline{Python}{matplotlib}.  
 
 
 \section{Results}
@@ -211,18 +230,33 @@ We generated graphs for each agent individually and for the environment as a who
 \begin{figure}[h]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2-agent1.png}
-  \caption{Environment 2, agent 1 cumulative reward}
+  %\caption{Environment 2, agent 1 cumulative reward}
 \end{figure}
 
 For the epsilon algorithms, agent 1 again never finds the closer resource, spawn pair, and its performance is mediocre. However, this also means that it does not hurt the other agent. The softmax algorithm is again able to find the closer pair. This time, the agent does not gain as much reward as before due to overcrowding, but it still gains more than when it was at the farther away resource. We now analyze agent 2 individually.
+%[insert ai-env2-agent2.png]\\
 
-[insert ai-env2-agent2.png]\\
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{ai-env2-agent2}
+  %\caption{Environment 2, agent 1 cumulative reward}
+\end{figure}
+
+
 
 For the epsilon algorithms, agent 2 learns pretty quickly that staying where it started is the best way of earning reward. However, the variance is quite high due to the constant exploration rate. Thankfully, for these algorithms, agent 1 never finds the closer resource, so agent 2's performance stays consistent once it learns. On the other hand, softmax learns more quickly to stay where agent 2 started. However, once agent 1 finds the resource, it becomes overcrowded and agent 2's performance significantly worsens. This triggers softmax to start exploring more often, and we have a period of high variance for agent 2 from episodes 150-350. Agent 2 quickly discovers that the farther pair does not improve the results and returns to the overcrowded resource. Agent 2 cannot do anything about the agent 1's greediness. Once softmax realizes, this, agent 2's variance decreases significantly. We now analyze the overall utility.
 
-[insert ai-env2.png]\\
+%[insert ai-env2.png]\\
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{ai-env2}
+  %\caption{Environment 2, agent 1 cumulative reward}
+\end{figure}
+
 
 Softmax starts out performing way better than epsilon-greedy thanks to agent 2 starting out in the perfect location. However, once agent 1 discovers the closer pair, the overall performance goes down for softmax. We notice that for the epsilon algorithms, when agent 1 never finds the location that is better for itself individually, the overall utility is better than that of softmax. This is similar to the classic prisoner's dilemma problem. We present the following game matrix with approximated values.
+
 \begin{center}
 \begin{tabular}{ c c c }
   & Far Pair & Close Pair \\ 
@@ -243,11 +277,26 @@ We believe this occurs due to the fact that both agents are moving. It it is dif
 
 In this environment, we add a thief (agent 1) who's goal is to steal resources from the other agent (agent 2). The only source only has one access point, as the others are blocked by either a blockade or an edge. The goal of the thief could theoretically make it impossible for agent 2 to stow any resources, but the theif won't get any reward unless it chases after agent 1 and steals resources. First, we present the results for the theif.
 
-[insert thief-agent1.png]
+%[insert thief-agent1.png]
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{thief-agent1}
+  %\caption{Environment 2, agent 1 cumulative reward}
+\end{figure}
+
+
 
 We notice that the thief is only successful with the softmax algorithm. Even then, the variance increases over time despite the evident learning. This is perhaps due to the unpredictable nature of the other agent. Based on our observation of the "good" agent, it alternates between running away and trying to (mostly unsuccessfully) stow a resource. We can see in the graph of agent 2 that the thief has a huge advantage here. 
 
-[insert thief-agent2.png]
+%[insert thief-agent2.png]
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=.7\textwidth]{thief-agent2}
+  %\caption{Environment 2, agent 1 cumulative reward}
+\end{figure}
+
 
 Ultimately what makes this environment interesting, is to think about the agent's incentives. If the thief tries chasing agent 2 around, then agent 2 might be able to run around the thief and get to the source. On the other hand, if it stays by the source, agent 2 may learn to never come near, resulting in both agents to receive minimal reward. If only the agents could agree to alternate between letting one steal and the other stow. That would cause maximum overall utility but cannot occur when they are both greedy, not to mention untrustworthy. Ultimately, the agents are making the right decision given their inability to communicate. In a larger environment, we could encounter zugzwang, a concept often used in chess to describe the situation where whoever makes the first move loses. If the thief moves away from the spawn, the agent can get there. But if the agent tries going to the spawn before the thief moves, the thief will get the agent. Whoever makes the first move loses.
 
