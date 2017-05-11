@@ -69,20 +69,20 @@
 \thispagestyle{plain}
 
 \begin{abstract}
-Q-Learning, and the numerous extensions thereof, has become a ubiquitous reinforcement learning technique. To explore the effectivness of Q-Learning in training multiple agents to farm resources, a training environment was implemented Python (3.5). The modular nature of the developed environment allowed for the simulation of various scenarious and reward structures, and for the possibility of future extensions.
+Q-Learning, and the numerous extensions thereof, has become a ubiquitous reinforcement learning technique. To explore the effectiveness of Q-Learning in training multiple agents to farm resources, a training environment was implemented Python (3.5). The modular nature of the developed environment allowed for the simulation of various scenarios and reward structures, and for the possibility of future extensions.
 \end{abstract}
 
 \section{Introduction}
 
-	The primary goal of this project was to explore the phenomenon of emerging intelligence in multiagent systems. Using an environment containing multiple non-communicating agents allowed for the observation of the strategies they developed to maximize individual utility. By testing different environments and different types of agents, global patterns of cooperation and competition emerged. 
+	The primary goal of this project was to explore the phenomenon of emerging intelligence in multi-agent systems. Using an environment containing multiple non-communicating agents allowed for the observation of the strategies they developed to maximize individual utility. By testing different environments and different types of agents, global patterns of cooperation and competition emerged. 
 	
 	Initially, Screeps seemed like a good environment to perform these experiments in. Once we tried to implement Q-learning however, several problems emerged. Because the Screeps world has a fixed amount of time between steps and it is very difficult to save and restore specific board states, it would have taken far too long for any meaningful learning to occur. In addition, the state space is so large that any single state would likely have never been encountered again. Finally, many of the interesting problems such as pathfinding were already solved. 
 	
-	Because of this, it made the most sense to do this project in a simplified Screeps-like environment without the limitations of a prexisting online game. The goal of a standard agent is to gather resources from a source and bring them back to a spawn. In later environments we narrowed the focus of each agent, dividing them up into gatherers, carriers, and thieves. This allowed us to observe how the agents would act when they were forced to work together and how they would handle threats. By creating this simple clone of Screeps, we obtained more direct control over our experiments. The ability to reload and modify the starting environment and do thousands of episodes of learning in a very short time allowed for the unobstructed observation of the performance of learning methods in a multiagent system. 
+	Because of this, it made the most sense to do this project in a simplified Screeps-like environment without the limitations of a preexisting online game. The goal of a standard agent is to gather resources from a source and bring them back to a spawn. In later environments we narrowed the focus of each agent, dividing them up into gatherers, carriers, and thieves. This allowed us to observe how the agents would act when they were forced to work together and how they would handle threats. By creating this simple clone of Screeps, we obtained more direct control over our experiments. The ability to reload and modify the starting environment and do thousands of episodes of learning in a very short time allowed for the unobstructed observation of the performance of learning methods in a multiagent system. 
 	
 \section{Prior Research}
 
-As discussed above, one shortcoming of \textit{Screeps} for this project was the lack of any prior Artificial Intelligence research reltaed to the game (perhaps foreshadowing the conclusions that lead to our shift in focus). Reinforcement Learning as a technique for building bots to play games, however, is a common research subject. Though an our environment and learning methods were relatively simple, resources providing background on Reinforcement Learning offered valuable supplemental information to that covered in lecture.
+As discussed above, one shortcoming of \textit{Screeps} for this project was the lack of any prior Artificial Intelligence research related to the game (perhaps foreshadowing the conclusions that lead to our shift in focus). Reinforcement Learning as a technique for building bots to play games, however, is a common research subject. Though our environment and learning methods were relatively simple, resources providing background on Reinforcement Learning offered valuable supplemental information to that covered in lecture.
 
 \section{Implementation}
 
@@ -94,7 +94,7 @@ The class used to represent each square on the grid in our simulation is \codewo
 
 \begin{table}[h]
 \centering
-\caption{Charater to type mapping}
+\caption{Character to type mapping}
 %\label{my-label}
 \begin{tabular}{|l|l|}
 \hline
@@ -126,13 +126,13 @@ A source\footnote{refered to as such in the code, but as a resource in the follo
 
 \subsection{Agent}
 
-\codeword{Agent} is a more substantial class than those previously discussed. The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, agent_type)}, accepts an environment object, the starting $xy$ position on the grid, a boolean \mintinline{Python}{carry}, and the type of agent to be initialized. The agent's initial state is then constructed as the three-tuple of \mintinline{Python}{(x, y, carry)}. Instance variables include the agent's Q-table as a dictionary, cumulative reward, capacity (number of resources the agent can carry, always 1), a boolean representing wether the agent's reward should be reduced (for use in the prisoner's dilemma scenario), and two initially null variables indicating the agent's victim (for the theif scenario), and the agent to hand resources to (in the collaborative scenario).
+\codeword{Agent} is a more substantial class than those previously discussed. The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, agent_type)}, accepts an environment object, the starting $xy$ position on the grid, a boolean \mintinline{Python}{carry}, and the type of agent to be initialized. The agent's initial state is then constructed as the three-tuple of \mintinline{Python}{(x, y, carry)}. Instance variables include the agent's Q-table as a dictionary, cumulative reward, capacity (number of resources the agent can carry, always 1), a boolean representing whether the agent's reward should be reduced (for use in the prisoner's dilemma scenario), two initially null variables indicating the agent's victim (for the thief scenario), and the agent to hand resources to (in the collaborative scenario).
 
 \codeword{Agent} has methods:
 \begin{itemize}
 \item \mintinline{Python}{update_position(self, x, y)}, which changes the coordinates in the instance's state;
-\item \mintinline{Python}{do_action(self, action, alpha, discount_factor, reward_modifier)} simulates an agent picking an aciton, calculating the reward, updating the Q-table, and returning the reward;
-\item \mintinline{Python}{mock_action(self, action)}, whic makes use of the environment's mock action method to return the reward for an action without actually updating the Q-table or the agent's state;
+\item \mintinline{Python}{do_action(self, action, alpha, discount_factor, reward_modifier)} simulates an agent picking an action, calculating the reward, updating the Q-table, and returning the reward;
+\item \mintinline{Python}{mock_action(self, action)}, which makes use of the environment's mock action method to return the reward for an action without actually updating the Q-table or the agent's state;
 \item \mintinline{Python}{get_q(self, state, action)} which extracts an entry from the the Q-table, or 0 if no entry exists;
 \item \mintinline{Python}{update_q(self, state, action, reward, alpha, discount_factor)}, which is called by \mintinline{Python}{do_action(...)} to perform the calculations on the inputs needed to update the Q-table;
 \item \mintinline{Python}{get_explorative_action(self)} which returns a random action from the set of possible actions;
@@ -181,7 +181,7 @@ The main method calls \mintinline{Python}{qlearning(environment, num_episodes, d
 
 \section{Results}
 
-We tested our multi-agent q-learning implementation on a number of screeps-like environments. We found some interesting and emergent results.
+We tested our multi-agent q-learning implementation on a number of Screeps-like environments. We found some interesting and emergent results.
 
 \subsection{A Better Reward Lies Farther Away}
 
@@ -275,7 +275,7 @@ We believe this occurs due to the fact that both agents are moving. It it is dif
 
 \subsection{Sabotage}
 
-In this environment, we add a thief (agent 1) who's goal is to steal resources from the other agent (agent 2). The only source only has one access point, as the others are blocked by either a blockade or an edge. The goal of the thief could theoretically make it impossible for agent 2 to stow any resources, but the theif won't get any reward unless it chases after agent 1 and steals resources. First, we present the results for the theif.
+In this environment, we add a thief (agent 1) who's goal is to steal resources from the other agent (agent 2). The only source only has one access point, as the others are blocked by either a blockade or an edge. The goal of the thief could theoretically make it impossible for agent 2 to stow any resources, but the thief won't get any reward unless it chases after agent 2 and steals resources. First, we present the results for the thief.
 
 %[insert thief-agent1.png]
 
@@ -303,6 +303,14 @@ Ultimately what makes this environment interesting, is to think about the agent'
 \section{Future Work}
 
 \section{Conclusion}
+
+	In this project, we build a simplified clone of Screeps that allowed for direct control over our experiments. We applied Q-learning techniques in a number of environments and observed the patterns of behavior that emerged. In the first environment which contains only one agent, we found that the softmax approach was able to find the most optimal solution while the epsilon-greedy approaches only found a decent solution. In the prisoners dilemma environment, we found that the system's total utility was lower when the agents favored exploration over exploitation. This is because they are greedy and non-communicating, so each will choose whichever strategy maximizes its own utility. Given the opportunity, the agent which starts far away from the optimal source-spawn path will go there even at the expense of the other. 
+	In the environment which divides up the responsibility between gatherers and carriers, we found that cooperation is extremely hard without communication. Because each agent.
+
+Cooperation is hard without communication
+
+
+Thieves, in order to maximize individual reward, the thief has to allow the non-thief to gather resources. If thief camps in one spot, non-thief will stop going there. In the end, the best solution for each is a stalemate.
 
 \section{References}
 
