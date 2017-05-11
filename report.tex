@@ -71,6 +71,84 @@ Insert abstract here.
 
 \section{Results}
 
+We tested our multi-agent q-learning implementation on a number of screeps-like environments. We found some interesting and emergent results.
+
+\subsection{A Better Reward Lies Farther Away}
+
+For the first environment, we started the agent near a resource that was far away from a spawn. Way down south, there was another resource and spawn pair very close to each other. The map looks as follows.\\
+\texttt{
+soooaooor\\
+ooooooooo\\
+ooxoooooo\\
+ooooooooo\\
+ooooooooo\\
+ooooooooo\\
+ooooooooo\\
+oooooosor\\
+}
+"o" means empty tile, "s" means spawn, "r" means resource, "a" means agent starting point, and "x" means blockade. We get the following results for the agent when running it for 1000 episodes in this environment.\\
+
+[insert ai-env1.png]\\
+
+We notice that the two epsilon-greedy action selectors perform similarly, with a slight preference to an epsilon of 0.05. Once they find the nearby resource and spawn and learn what to do, they immediately jump up significantly in reward, thanks to the lack of unpredictable results with the actions. However, they never find the farther away resource that has a close spawn. Since they only explore less than 10\% of the time, they never stray far enough away from the initial reward sequence they find to get to the other one. The variance is quite low for both of the epsilon-greedy algorithms. The little variance we notice after the improvement is due to the exploration. As we would expect, the results with an epsilon of 0.05 has less variance than the results with an epsilon of 0.1.
+
+On the other hand, the softmax algorithm finds the better reward. The frequency of exploration for softmax depends on how well the algorithm is currently doing, that is to say based on how high the Q-values are. When the Q-values for the exploitative actions eclipses those of the other possible actions, the algorithm will rarely pick non-exploratory actions. The softmax algorithm is not satisfied by the resource, spawn pair that are far apart, as the q-values do not get high enough to significantly reduce exploration. This causes a significant amount of variance at the beginning of the episode. Eventually, the algorithm finds the close resource, spawn pair and learns to go there immediately at the start of the episode. Since it receives a reward every other turn (as they are right next to each other) it is very unlikely for it to explore. As a result, the variance is almost zero once the algorithm converges. As it is learning, however, the variance is significantly higher than the maximum variance interval of either of the epsilon-greedy algorithms.
+
+\subsection{A Dilemma}
+
+For this environment, we have two agents. The first agent starts near the far away resource, spawn pair, and the second agent starts next to the close resource, spawn pair. Note that if multiple agents mine the same resource simultaneously, they both get less than 50\% of what they would otherwise due to overcrowding.\\
+\texttt{
+soooaooor\\
+ooooooooo\\
+ooxoooooo\\
+ooooooooo\\
+ooooooooo\\
+oooooooos\\
+ooooooooa\\
+oooooosor\\
+}
+
+We generated graphs for each agent individually and for the environment as a whole. The purpose of this was to analyze whether greedy behavior hurts overall utility, and it does. We first present Agent 1's graph, the agent who started near the far away source, resource pair.
+
+[insert ai-env2-agent1.png]\\
+
+For the epsilon algorithms, agent 1 again never finds the closer resource, spawn pair, and its performance is mediocre. However, this also means that it does not hurt the other agent. The softmax algorithm is again able to find the closer pair. This time, the agent does not gain as much reward as before due to overcrowding, but it still gains more than when it was at the farther away resource. We now analyze agent 2 individually.
+
+[insert ai-env2-agent2.png]\\
+
+For the epsilon algorithms, agent 2 learns pretty quickly that staying where it started is the best way of earning reward. However, the variance is quite high due to the constant exploration rate. Thankfully, for these algorithms, agent 1 never finds the closer resource, so agent 2's performance stays consistent once it learns. On the other hand, softmax learns more quickly to stay where agent 2 started. However, once agent 1 finds the resource, it becomes overcrowded and agent 2's performance significantly worsens. This triggers softmax to start exploring more often, and we have a period of high variance for agent 2 from episodes 150-350. Agent 2 quickly discovers that the farther pair does not improve the results and returns to the overcrowded resource. Agent 2 cannot do anything about the agent 1's greediness. Once softmax realizes, this, agent 2's variance decreases significantly. We now analyze the overall utility.
+
+[insert ai-env2.png]\\
+
+Softmax starts out performing way better than epsilon-greedy thanks to agent 2 starting out in the perfect location. However, once agent 1 discovers the closer pair, the overall performance goes down for softmax. We notice that for the epsilon algorithms, when agent 1 never finds the location that is better for itself individually, the overall utility is better than that of softmax. This is similar to the classic prisoner's dilemma problem. We present the following game matrix with approximated values.
+\begin{center}
+\begin{tabular}{ c c c }
+  & Far Pair & Close Pair \\ 
+ Far Pair & 1, 1 & 1, 4 \\  
+ Close Pair & 4, 1 & 1.5, 1.5    
+\end{tabular}
+\end{center}
+
+The dominant strategy is for both agents to select the close pair, which is what happens when we use softmax for action selection. However, when one agent cannot find the close pair (when we use epsilon-greedy), overall utility is increased.
+
+\subsection{Working Together}
+
+We now present our results for the environment where agents have different roles. Recall that some agents are "gatherers", that is to say they can mine resources. Other agents are "carriers", and only they know the procedure for dropping them off at the spawn. All agents can carry resources around, but the gatherers must give their resources they mine to a carrier to drop off at a spawn. When we create a simple environment with only one dimension, the agents learn pretty quickly what to do. However, the agents never seem to learn for more complicated environments. We notice that at some points, the reward spikes up a bit only for it to go back down immediately.
+
+We believe this occurs due to the fact that both agents are moving. It it is difficult for them to both be in the place they expect each other to be at the right time, and when they aren't, the q-value decreases, and they eventually find each other (randomly) somewhere else. This increases the q-value for the new meeting point, but they don't end up there at the same time again. Since the agent's don't have the other agent locations as part of their state, they see the state as the same regardless of whether or not the agents are next to each other. When the desired action is not available, the value of the state decreases due to the fact that the state takes into account the reduced future reward for it taking longer to find the other agent again.\\
+
+\subsection{Sabotage}
+
+In this environment, we add a thief (agent 1) who's goal is to steal resources from the other agent (agent 2). The only source only has one access point, as the others are blocked by either a blockade or an edge. The goal of the thief could theoretically make it impossible for agent 2 to stow any resources, but the theif won't get any reward unless it chases after agent 1 and steals resources. First, we present the results for the theif.
+
+[insert thief-agent1.png]
+
+We notice that the thief is only successful with the softmax algorithm. Even then, the variance increases over time despite the evident learning. This is perhaps due to the unpredictable nature of the other agent. Based on our observation of the "good" agent, it alternates between running away and trying to (mostly unsuccessfully) stow a resource. We can see in the graph of agent 2 that the thief has a huge advantage here. 
+
+[insert thief-agent2.png]
+
+Ultimately what makes this environment interesting, is to think about the agent's incentives. If the thief tries chasing agent 2 around, then agent 2 might be able to run around the thief and get to the source. On the other hand, if it stays by the source, agent 2 may learn to never come near, resulting in both agents to receive minimal reward. If only the agents could agree to alternate between letting one steal and the other stow. That would cause maximum overall utility but cannot occur when they are both greedy, not to mention untrustworthy. Ultimately, the agents are making the right decision given their inability to communicate. In a larger environment, we could encounter zugzwang, a concept often used in chess to describe the situation where whoever makes the first move loses. If the thief moves away from the spawn, the agent can get there. But if the agent tries going to the spawn before the thief moves, the thief will get the agent. Whoever makes the first move loses.
+
 \section{Future Work}
 
 \section{Conclusion}
