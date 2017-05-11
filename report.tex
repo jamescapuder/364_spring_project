@@ -9,19 +9,13 @@
 \usepackage{ifsym}
 \usepackage{graphicx}
 \usepackage{cite}
-\usepackage{hyperref}
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-}
+
 \usepackage{xcolor}
 \usepackage{listings}
 \usepackage{minted}
 \usemintedstyle{vs}
 \usepackage{xparse}
-\usepackage{float}
+
 \newtheorem{lemma}{Lemma}
 \newtheorem*{lem}{Lemma}
 \newtheorem{definition}{Definition}
@@ -88,7 +82,7 @@ Q-Learning, and the numerous extensions thereof, has become a ubiquitous reinfor
 	
 \section{Prior Research}
 
-As discussed above, one shortcoming of \textit{Screeps} for this project was the lack of any prior Artificial Intelligence research related to the game (perhaps foreshadowing the conclusions that lead to our shift in focus). Reinforcement Learning as a technique for building bots to play games, however, is a common research subject. Though our environment and learning methods were relatively simple, resources providing background on Reinforcement Learning offered valuable supplemental information to that covered in lecture. These sources are included in the References sections.
+As discussed above, one shortcoming of \textit{Screeps} for this project was the lack of any prior Artificial Intelligence research related to the game (perhaps foreshadowing the conclusions that lead to our shift in focus). Reinforcement Learning as a technique for building bots to play games, however, is a common research subject. Though our environment and learning methods were relatively simple, resources providing background on Reinforcement Learning offered valuable supplemental information to that covered in lecture.
 
 \section{Implementation}
 
@@ -96,9 +90,7 @@ This section details the implementation of the scripts and classes used in our f
 
 \subsection{Tile}
 
-The class used to represent each square on the grid in our simulation is \codeword{Tile}.
-
-The constructor, \mintinline{Python}{def __init__(self, x, y, tile_type)}, takes as arguments the $x$ and $y$ positions of the \codeword{Tile} on the grid, and a character representing what type of tile to initialize. These are saved as instance variables; $x, y$ are static, but \mintinline{Python}{tile_type} along with a variable \mintinline{Python}{self.init_type} to save the initial type of the tile so that the grid can be reset to it's initial configuration. The following table contains the mapping of characters to the tile types the represent.
+The class used to represent each square on the grid in our simulation is \codeword{Tile}. The constructor, \mintinline{Python}{def __init__(self, x, y, tile_type)}, takes as arguments the $x$ and $y$ positions of the \codeword{Tile} on the grid, and a character representing what type of tile to initialize. These are saved as instance variables; $x, y$ are static, but \mintinline{Python}{tile_type} along with a variable \mintinline{Python}{self.init_type} to save the initial type of the tile so that the grid can be reset to it's initial configuration. The following table contains the mapping of characters to the tile types the represent.
 
 \begin{table}[h]
 \centering
@@ -126,21 +118,15 @@ The class \codeword{State} simply holds constants that are used to clarify the i
 
 \subsection{Source}
 
-A source\footnote{refered to as such in the code, but as a resource in the following results section} is an object from which agents can collect energy to return to the spawn.
-
-The constructor, \mintinline{Python}{__init__(self, x, y, capacity=100000)}, takes $xy$ coordinates and a capacity, which is the maximum amount that can be farmed from the source. The \mintinline{Python}{gather(self)} method is called whenever an agent gathers from this source, and returns a boolean value indicating whether the action was successful (false if \mintinline{Python}{self.capacity==0}, true otherwise). Similarly to \codeword{Tile}, \codeword{Source} has a reset method that reverts \mintinline{Python}{self.capacity} to the value with which it was initialized.
+A source\footnote{refered to as such in the code, but as a resource in the following results section} is an object from which agents can collect energy to return to the spawn. The constructor, \mintinline{Python}{__init__(self, x, y, capacity=100000)}, takes $xy$ coordinates and a capacity, which is the maximum amount that can be farmed from the source. The \mintinline{Python}{gather(self)} method is called whenever an agent gathers from this source, and returns a boolean value indicating whether the action was successful (false if \mintinline{Python}{self.capacity==0}, true otherwise). Similarly to \codeword{Tile}, \codeword{Source} has a reset method that reverts \mintinline{Python}{self.capacity} to the value with which it was initialized.
 
 \subsection{Spawn}
 
-\codeword{Spawn} objects are those to which agents return gathered resources.
-
-The constructor, \mintinline{Python}{__init__(self, x,y)}, takes only the $xy$ position of the \codeword{Spawn} instance on the grid. The \mintinline{Python}{dropoff(self)} method increments a counter representing the total number of resources returned to this \codeword{Spawn} whenever an agent performs that action, and the reset method reverts that counter to 0.
+\codeword{Spawn} objects are those to which agents return gathered resources. The constructor, \mintinline{Python}{__init__(self, x,y)}, takes only the $xy$ position of the \codeword{Spawn} instance on the grid. The \mintinline{Python}{dropoff(self)} method increments a counter representing the total number of resources returned to this \codeword{Spawn} whenever an agent performs that action, and the reset method reverts that counter to 0.
 
 \subsection{Agent}
 
-\codeword{Agent} is a more substantial class than those previously discussed.
-
-The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, agent_type)}, accepts an environment object, the starting $xy$ position on the grid, a boolean \mintinline{Python}{carry}, and the type of agent to be initialized. The agent's initial state is then constructed as the three-tuple of \mintinline{Python}{(x, y, carry)}. Instance variables include the agent's Q-table as a dictionary, cumulative reward, capacity (number of resources the agent can carry, always 1), a boolean representing whether the agent's reward should be reduced (for use in the prisoner's dilemma scenario), two initially null variables indicating the agent's victim (for the thief scenario), and the agent to hand resources to (in the collaborative scenario).
+\codeword{Agent} is a more substantial class than those previously discussed. The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, agent_type)}, accepts an environment object, the starting $xy$ position on the grid, a boolean \mintinline{Python}{carry}, and the type of agent to be initialized. The agent's initial state is then constructed as the three-tuple of \mintinline{Python}{(x, y, carry)}. Instance variables include the agent's Q-table as a dictionary, cumulative reward, capacity (number of resources the agent can carry, always 1), a boolean representing whether the agent's reward should be reduced (for use in the prisoner's dilemma scenario), two initially null variables indicating the agent's victim (for the thief scenario), and the agent to hand resources to (in the collaborative scenario).
 
 \codeword{Agent} has methods:
 \begin{itemize}
@@ -160,14 +146,12 @@ The constructor, \mintinline{Python}{__init__(self,environment, x, y, carry, age
 
 \subsection{Grid}
 
-\codeword{Grid} is a relatively simple class responsible for building and managing a board of tile objects.
-
-The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, environment)}, takes an environment object and a file path pointing to a text file containing an initial board configuration. It initializes lists of agents, spawns, and sources, splits the contents of the text file into a 2D list, infers \mintinline{Python}{self.width, self.height} from that list, and finally builds up the actual board by reading each character in the 2D list, and constructing a new \codeword{Tile} object for each one with the appropriate type and $xy$ position.
+\codeword{Grid} is a relatively simple class responsible for building and managing a board of tile objects.The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, environment)}, takes an environment object and a file path pointing to a text file containing an initial board configuration. It initializes lists of agents, spawns, and sources, splits the contents of the text file into a 2D list, infers \mintinline{Python}{self.width, self.height} from that list, and finally builds up the actual board by reading each character in the 2D list, and constructing a new \codeword{Tile} object for each one with the appropriate type and $xy$ position.
 
 \codeword{Grid} implements the following methods:
 
 \begin{itemize}
-\item \mintinline{Python}{initTileAdjacent(self)}, which is called after \mintinline{Python}{self.board} is constructed. This method populates the agent, spawn, and sources lists, and calls each tile's \mintinline{Python}{initAdjacent()} method.
+\item \mintinline{Python}{initTileAdjacent(self)}, which is called after \mintinline{Python}{self.board} is constructed. This method populates the lists \mintinline{Python}{self.agents, self.spawns, self.sources}, and calls each tile's \mintinline{Python}{initAdjacent()} method.
 \item \mintinline{Python}{get_tile(self, x, y)} returns the tile at \mintinline{Python}{self.board[y][x]}.
 \item \mintinline{Python}{reset(self)} which calls the appropriate reset method on all elements of the three lists discussed above, as well as the reset method of each tile.
 \item \mintinline{Python}{reset_all(self, components)} which simply takes a list of elements and calls that element's reset method.
@@ -175,9 +159,7 @@ The constructor for \codeword{Grid}, \mintinline{Python}{__init__(self, fpath, e
 
 \subsection{Environment}
 
-Now that we have the various components of our simulation, we cover the \codeword{Environment} class, which effectively serves as the shared point between \codeword{Grid} and \codeword{Agent}, helping to define how the agents are allowed to move around the grid.
-
-The constructor for \codeword{Environment}, \mintinline{Python}{__init__(self, fname)}, takes just a file name, which is used to initialize a \codeword{Grid} instance. An important note is that the constructors for both \codeword{Grid} and \codeword{Agent} both take an environment object, so the environment from which this \codeword{Grid} is created, is propagated to all of these objects. The only instance variables of \codeword{Environment} are the \codeword{Grid} and a boolean value indicating whether the current episode is finished.
+Now that we have the various components of our simulation, we cover the \codeword{Environment} class, which effectively serves as the shared point between \codeword{Grid} and \codeword{Agent}, helping to define how the agents are allowed to move around the grid. The constructor for \codeword{Environment}, \mintinline{Python}{__init__(self, fname)}, takes just a file name, which is used to initialize a \codeword{Grid} instance. An important note is that the constructors for both \codeword{Grid} and \codeword{Agent} both take an environment object, so the environment from which this \codeword{Grid} is created, is propagated to all of these objects. The only instance variables of \codeword{Environment} are the \codeword{Grid} and a boolean value indicating whether the current episode is finished.
 
 \codeword{Environment} contains the following methods:
 
@@ -192,9 +174,9 @@ The constructor for \codeword{Environment}, \mintinline{Python}{__init__(self, f
   
 \subsection{Qlearning}
 
-This is the script that actually runs the episodes, plots the data, and manages the basic GUI (enabled by setting the \mintinline{Python}{gui_enabled} boolean to True). \mintinline{Python}{ENV_FILE} is set to the name of a text file containing the initial configurations for a scenario, only one of which can be uncommented at a time. \mintinline{Python}{NUM_EPISODES, NUM_STEPS} define the number of episodes to run for each Q-learning method, and the number of steps per episode, respectively. \mintinline{Python}{EPSILON_MODE, EPSILON1, EPSILON2} are, in order: a 0 or 1, representing whether the epsilon greedy approach should be performed, the first value for epsilon to use for simulation, and the second epsilon value to use for simulation. \mintinline{Python}{SOFTMAX_MODE} determines whether the softmax approach should be performed, and \mintinline{Python}{TAU} specifies the tau value for use in softmax.
+This is the script that actually runs the episodes, plots the data, and manages the basic GUI (enabled by setting the gui_enabled boolean to True). \mintinline{Python}{ENV_FILE} is set to the name of a text file containing the initial configurations for a scenario, only one of which can be uncommented at a time. \mintinline{Python}{NUM_EPISODES, NUM_STEPS} define the number of episodes to run for each Q-learning method, and the number of steps per episode, respectively. \mintinline{Python}{EPSILON_MODE, EPSILON1, EPSILON2} are, in order: a 0 or 1, representing whether the epsilon greedy approach should be performed, the first value for epsilon to use for simulation, and the second epsilon value to use for simulation. \mintinline{Python}{SOFTMAX_MODE} determines whether the softmax approach should be performed, and \mintinline{Python}{TAU} specifies the tau value for use in softmax.
 
-The main method calls \mintinline{Python}{qlearning(...)} for each enabled learning mode, parameterized by the flags set at the beginning of the script. This method in turn runs each episode by calling \mintinline{Python}{qlearn_episode(agents,discount_factor, mode, epsilon, episode)}, which returns a list of the cumulative rewards earned by each agent to \mintinline{Python}{qlearning(...)}. Each episode's results are saved in a list that is returned to main, and the information is then plotted with \mintinline{Python}{matplotlib}.  
+The main method calls \mintinline{Python}{qlearning(environment, num_episodes, discount_factor, mode, epsilon=0)} for each enabled learning mode, parameterized by the flags set at the beginning of the script. This method in turn runs each episode by calling \mintinline{Python}{qlearn_episode(agents,discount_factor, mode, epsilon, episode)}, which returns a list of the cumulative rewards earned by each agent to \mintinline{Python}{qlearning(...)}. Each episode's results are saved in a list that is returned to main, and the information is then plotted with \mintinline{Python}{matplotlib}.  
 
 
 \section{Results}
@@ -216,7 +198,7 @@ oooooosor\\
 }
 "o" means empty tile, "s" means spawn, "r" means resource, "a" means agent starting point, and "x" means blockade. We get the following results for the agent when running it for 1000 episodes in this environment.\\
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
 \includegraphics[width=.7\textwidth]{ai-env1.png}
 \caption{Single agent cumulative reward, 1000 episodes.}
@@ -245,7 +227,7 @@ We generated graphs for each agent individually and for the environment as a who
 
 %[insert ai-env2-agent1.png]\\
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2-agent1.png}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -254,7 +236,7 @@ We generated graphs for each agent individually and for the environment as a who
 For the epsilon algorithms, agent 1 again never finds the closer resource, spawn pair, and its performance is mediocre. However, this also means that it does not hurt the other agent. The softmax algorithm is again able to find the closer pair. This time, the agent does not gain as much reward as before due to overcrowding, but it still gains more than when it was at the farther away resource. We now analyze agent 2 individually.
 %[insert ai-env2-agent2.png]\\
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2-agent2}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -266,7 +248,7 @@ For the epsilon algorithms, agent 2 learns pretty quickly that staying where it 
 
 %[insert ai-env2.png]\\
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=.7\textwidth]{ai-env2}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -297,7 +279,7 @@ In this environment, we add a thief (agent 1) who's goal is to steal resources f
 
 %[insert thief-agent1.png]
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=.7\textwidth]{thief-agent1}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -309,7 +291,7 @@ We notice that the thief is only successful with the softmax algorithm. Even the
 
 %[insert thief-agent2.png]
 
-\begin{figure}[H]
+\begin{figure}[h]
   \centering
   \includegraphics[width=.7\textwidth]{thief-agent2}
   %\caption{Environment 2, agent 1 cumulative reward}
@@ -320,30 +302,17 @@ Ultimately what makes this environment interesting, is to think about the agent'
 
 \section{Future Work}
 
+	The next step we would take in this project is to add in shared Q-tables. This would change the motivation of each agent, and instead of being greedy they would try to maximize the system's total utility. This could result in new emergent behaviors such as cooperation between thieves and their victims, where they alternate between stealing the resource and turning it in. It would also greatly increase the cooperation between gatherers and carriers, assuming we modified their states to include the location of the other.
+
 \section{Conclusion}
 
 	In this project, we build a simplified clone of Screeps that allowed for direct control over our experiments. We applied Q-learning techniques in a number of environments and observed the patterns of behavior that emerged. In the first environment which contained only one agent, we found that the softmax approach was able to find the most optimal solution while the epsilon-greedy approaches only found a sub-optimal solution. In the prisoners dilemma environment, we found that the system's total utility was lower when the agents favored exploration over exploitation. This is because they are greedy and non-communicating, so each will choose whichever strategy maximizes its own utility. Given the opportunity, the agent which starts far away from the optimal source-spawn path will go there even at the expense of the other. 
 	
 	In the environment which divides up the responsibility between gatherers and carriers, we found that cooperation is extremely hard without communication. Because each agent doesn't contain the other agent's location within its state, its Q-table fails to direct it towards the nearest potential handoff but instead towards the spot where it has most often handed off in the past. We found that when the agents met, it was usually a coincidence, indicating that little meaningful learning occurred. With the introduction of a thief agent, a whole new layer of complexity was added. Because the thief and its victim are both using Q-learning, their greedy approaches lead to a stalemate. If the thief starts camping the spawn, then its victim will learn to avoid the spawn. The behavior that emerges is "the first to move loses", where making the first move gives the other agent the advantage. This makes perfect sense in a pair of non-communicating greedy agents, because neither is willing take a negative reward by making a move that its opponent can exploit.
 	
-	The next step we would take in this project is to add in shared Q-tables. This would change the motivation of each agent, and instead of being greedy they would try to maximize the system's total utility. This could result in other interesting emergent behaviors such as cooperation between thieves and their victims, where they alternate between stealing the resource and turning it in. In the end, we created a system that allowed for the unobstructed observation of the performance of Q-learning methods in multiagent systems. Using this system, we modeled a number of different scenarios and explored the emergent behavior of non-communicating greedy agents. 
+	 In the end, we created a system that allowed for the unobstructed observation of the performance of Q-learning methods in multiagent systems. Using this system, we modeled a number of different scenarios and explored the emergent behavior of non-communicating greedy agents. 
 
 \section{References}
-
-
-\href{http://www.cs.mun.ca/~dchurchill/pdf/starcraft_survey.pdf}{A review of AI in real time strategy games.}
-
-This paper provides a survey of current research on AI applied to real-time strategy games, with a focus on the game Starcraft. Most real-time strategy games, including Starcraft, have some similarities in the objectives and possible actions, so we can apply this general research to Screeps. Some of the techniques discussed involve observing good human players and scraping data to input to learning algorithms. Unfortunately, we cannot apply those methods to Screeps, as it can only be controlled by AI. The paper does discuss some strategies that we can apply without observing human data and explains current open problems and challenges.
-
-
-\noindent\href{https://adeshpande3.github.io/Deep-Learning-Research-Review-Week-2-Reinforcement-Learning}{Reinforcement Learning}
-
-This article discusses the relative merits of supervised learning, unsupervised learning, and reinforcement learning as methods of machine learning. It then delves into reinforcement learning, giving a detailed overview before moving on to a pair of research articles. The first goes over Google Deep Mind’s attempts to use reinforcement learning with a neural network to beat Atari games. The second discusses Alpha Go and how it used reinforcement learning to beat the world’s greatest Go players.
-
-
-\noindent\href{http://web.mysites.ntu.edu.sg/yhlow/public/Shared\%20Documents/papers/indin06-emergent.pdf}{A Survey of Emergent Behavior and Its Impacts in Agent-based Systems}
-
-This paper is about emerging intelligence and will help us improve our understanding of how emergence works and how it can be used in multi-agent systems. It is not about Screeps specifically, but about multi-agent systems in general. We hope to be able to apply the research to Screeps.
 
 
 
