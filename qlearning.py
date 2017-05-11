@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from environment import Environment
 from gui import Gui
 import time
-#import curses
 
 curses_enabled = False 
 gui_enabled = False 
@@ -146,26 +145,5 @@ def pick_action(agent, mode, epsilon, tau):
     elif mode == SOFTMAX_MODE:
         return agent.pick_action_softmax(tau)
 
-
-# CURSES METHODS
-def init_curses():
-    stdscr = curses.initscr()
-    curses.noecho()
-    stdscr.clear()
-    stdscr.keypad(True)
-    return stdscr
-
-def kill_curses(stdscr):
-    stdscr.keypad(False)
-    curses.echo()
-    # restore the terminal to its original state
-    curses.endwin()
-
-def curses_step(stdscr, board):
-    for y in range(len(board)):
-        for x in range(len(board[y])):
-            stdscr.addch(y,x, board[y][x].tile_type)
-    stdscr.refresh()
-    
 if __name__ == "__main__":
     main()
